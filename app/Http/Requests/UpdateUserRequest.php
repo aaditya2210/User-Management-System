@@ -19,7 +19,7 @@ class UpdateUserRequest extends FormRequest
             'contact_number' => 'required|digits:10',
             'postcode' => 'required|digits:6',
             'gender' => 'required',
-            'roles' => 'required|array',
+            // 'roles' => 'required|array',
             'city_id' => 'required|exists:cities,id',
             'state_id' => 'required|exists:states,id',
             'files.*' => 'file|mimes:jpg,jpeg,png,pdf,docx|max:2048'

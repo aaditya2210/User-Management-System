@@ -55,12 +55,12 @@ Route::get('/customers/export/pdf', [CustomerController::class, 'exportPDF']);
 
 use App\Http\Controllers\UserController;
 
-Route::middleware('auth:api')->group(function () {
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/export/csv', [UserController::class, 'exportCSV']);
-    Route::get('/users/export/excel', [UserController::class, 'exportExcel']);
-    Route::get('/users/export/pdf', [UserController::class, 'exportPDF']);
-});
+// Route::middleware('auth:api')->group(function () {
+//     Route::get('/users', [UserController::class, 'index']);
+//     Route::get('/users/export/csv', [UserController::class, 'exportCSV']);
+//     Route::get('/users/export/excel', [UserController::class, 'exportExcel']);
+//     Route::get('/users/export/pdf', [UserController::class, 'exportPDF']);
+// });
 
 
 

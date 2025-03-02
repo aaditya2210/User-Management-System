@@ -72,9 +72,9 @@
             <div class="mb-3">
                 <label>Roles:</label>
                 <select name="roles[]" multiple class="form-control">
-                    <option value="admin">Admin</option>
-                    <option value="user">User</option>
-                    <option value="editor">Editor</option>
+                    @foreach($roles as $role)
+                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                    @endforeach
                 </select>
                 <span class="text-danger error"></span>
             </div>
@@ -118,8 +118,8 @@
             errorElement: 'span',
             errorClass: 'text-danger',
             rules: {
-                first_name: { required: true, lettersonly: true },
-                last_name: { required: true, lettersonly: true },
+                first_name: { required: true, alphanumeric: true },
+                last_name: { required: true, alphanumeric: true },
                 email: { required: true, email: true },
                 contact_number: { required: true, digits: true, minlength: 10, maxlength: 10 },
                 postcode: { required: true, digits: true, minlength: 6, maxlength: 6 },
@@ -133,8 +133,8 @@
                 "files[]": { required: true }
             },
             messages: {
-                first_name: { required: "First name is required.", lettersonly: "Only letters are allowed." },
-                last_name: { required: "Last name is required.", lettersonly: "Only letters are allowed." },
+                first_name: { required: "First name is required.", alphanumeric: "Only letters and numbers are allowed" },
+                last_name: { required: "Last name is required.", alphanumeric: "Only letters and numbers are allowed" },
                 email: { required: "Email is required.", email: "Enter a valid email." },
                 contact_number: { required: "Contact number is required.", digits: "Only digits are allowed.", minlength: "Must be 10 digits.", maxlength: "Must be 10 digits." },
                 postcode: { required: "Postcode is required.", digits: "Only digits are allowed.", minlength: "Must be 6 digits.", maxlength: "Must be 6 digits." },
@@ -149,8 +149,8 @@
             }
         });
 
-        $.validator.addMethod("lettersonly", function (value, element) {
-            return this.optional(element) || /^[a-zA-Z]+$/.test(value);
+        $.validator.addMethod("alphanumeric", function (value, element) {
+            return this.optional(element) || /^[a-zA-Z0-9]+$/.test(value);
         }, "Only letters are allowed.");
 
         $('#state').change(function () {

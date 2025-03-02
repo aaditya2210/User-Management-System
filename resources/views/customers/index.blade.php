@@ -131,24 +131,7 @@
     });
 }
 
-        // function deleteCustomer(id) {
-        //     if (!confirm('Are you sure you want to delete this customer?')) return;
-
-        //     $.ajax({
-        //         url: `/api/customers/${id}`,
-        //         method: 'DELETE',
-        //         headers: {
-        //             'Authorization': "Bearer " + localStorage.getItem("access_token")
-        //         },
-        //         success: function () {
-        //             fetchCustomers();
-        //         },
-        //         error: function (xhr) {
-        //             alert("Failed to delete customer. Ensure you are authenticated.");
-        //             console.error(xhr.responseText);
-        //         }
-        //     });
-        // }
+       
 
         $(document).ready(function () {
             fetchCustomers();

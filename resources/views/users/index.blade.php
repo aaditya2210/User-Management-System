@@ -64,6 +64,14 @@
                     </a>
                     @endcan
                 </div>
+
+                <div>
+                @can('manage-users')
+                    <a href="{{ route('roles.index') }}" class="btn btn-warning">
+                        <i class="bi bi-shield-lock"></i>Define Roles
+                    </a>
+                    @endcan
+                </div>
                 
                 {{-- Export Buttons --}}
                 <div class="btn-group" role="group">
@@ -123,6 +131,7 @@
 {{-- JavaScript for Delete Confirmation and AJAX --}}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        
         // Initial Load Users
         loadUsers(1);
 

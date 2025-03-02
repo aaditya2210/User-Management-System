@@ -23,6 +23,11 @@
             </div>
 
             <div class="form-group">
+                <label>Address:</label>
+                <textarea name="address" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
                 <label>Company Name:</label>
                 <input type="text" name="company_name" class="form-control">
             </div>
@@ -59,6 +64,13 @@
                     <option value="Corporate">Corporate</option>
                 </select>
             </div>
+
+
+            <div class="form-group">
+                <label>Notes:</label>
+                <textarea name="notes" class="form-control"></textarea>
+            </div>
+            
 
             <div class="form-group">
                 <label>Preferred Contact Method:</label>

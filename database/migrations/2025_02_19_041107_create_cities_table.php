@@ -12,11 +12,21 @@ return new class extends Migration
     public function up()
     {
         Schema::create('cities', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->foreignId('state_id')->constrained();
+            $table->id()->comment('Primary key: Unique city ID');
+            $table->string('name', 100)->comment('City name (max 100 characters)'); // Optimized size
+            $table->foreignId('state_id')
+                ->constrained()
+                ->cascadeOnDelete()
+                ->comment('Foreign key: References states table'); // Ensures referential integrity
             $table->timestamps();
         });
     }
-    public function down() { Schema::dropIfExists('cities'); }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::dropIfExists('cities');
+    }
 };

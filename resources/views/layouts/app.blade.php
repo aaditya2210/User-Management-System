@@ -11,12 +11,50 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-dark bg-dark">
-        <div class="container">
+    {{-- <nav class="navbar navbar-dark bg-dark">
+        <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand" href="{{ route('users.index') }}">User Management</a>
+            
+            <div class="d-flex gap-2">
+                <a class="btn btn-primary" href="{{ url('/users') }}">Dashboard</a>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav> --}}
+    
+
+
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="{{ route('users.index') }}">User Management</a>
+    
+            <div class="d-flex gap-2">
+                @if (in_array(Route::currentRouteName(), ['login', 'register']))
+                    <a class="btn btn-secondary" href="{{ url('/') }}">Home</a>
+                @else
+                    <a class="btn btn-primary" href="{{ url('/users') }}">Dashboard</a>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                @endif
+            </div>
         </div>
     </nav>
+    
 
+
+
+   
+    
     <div class="container mt-4">
         @yield('content')
     </div>

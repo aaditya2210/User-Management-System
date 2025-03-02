@@ -24,6 +24,11 @@
             </div>
 
             <div class="form-group">
+                <label>Address:</label>
+                <textarea name="address" class="form-control">{{ $customer->address }}</textarea>
+            </div>
+
+            <div class="form-group">
                 <label>Company Name:</label>
                 <input type="text" name="company_name" class="form-control" value="{{ $customer->company_name }}">
             </div>
@@ -81,6 +86,11 @@
             <div class="form-group">
                 <label>Account Balance ($):</label>
                 <input type="number" step="0.01" name="account_balance" class="form-control" value="{{ $customer->account_balance }}">
+            </div>
+
+            <div class="form-group">
+                <label>Notes:</label>
+                <textarea name="notes" class="form-control">{{ $customer->notes }}</textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">Update Customer</button>

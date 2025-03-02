@@ -8,8 +8,8 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
+            $table->id()->comment('Primary Key: Unique Role ID');
+            $table->string('name', 50)->unique()->comment('Role name (Unique & Max: 50 chars)');
             $table->timestamps();
         });
     }

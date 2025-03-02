@@ -89,14 +89,14 @@
                     </div>
 
                     {{-- Roles --}}
-                    <div class="col-md-12 mb-3">
+                    {{-- <div class="col-md-12 mb-3">
                         <label for="roles" class="form-label">Roles</label>
                         <select name="roles[]" id="roles" class="form-control" multiple>
                             <option value="Admin" {{ in_array('Admin', json_decode($user->roles, true) ?? []) ? 'selected' : '' }}>Admin</option>
                             <option value="Editor" {{ in_array('Editor', json_decode($user->roles, true) ?? []) ? 'selected' : '' }}>Editor</option>
                             <option value="User" {{ in_array('User', json_decode($user->roles, true) ?? []) ? 'selected' : '' }}>User</option>
                         </select>
-                    </div>
+                    </div> --}}
 
                     {{-- File Uploads --}}
                     <div class="col-md-12 mb-3">

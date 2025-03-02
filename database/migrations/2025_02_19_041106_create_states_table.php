@@ -12,10 +12,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('states', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
+            $table->id()->comment('Primary key: Unique state ID');
+            $table->string('name', 100)->comment('State name (max 100 characters)'); // Optimized size
+            $table->timestamps(); // Includes created_at and updated_at timestamps
         });
     }
-    public function down() { Schema::dropIfExists('states'); }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::dropIfExists('states');
+    }
 };

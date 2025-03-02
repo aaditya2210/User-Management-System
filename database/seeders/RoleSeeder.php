@@ -7,14 +7,12 @@ use App\Models\Role;
 
 class RoleSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        $roles = ['Admin', 'Teacher', 'Student'];
+        $roles = collect(['Admin', 'supplier_manager', 'customer_manager'])->map(fn($role) => ['name' => $role, 'created_at' => now(), 'updated_at' => now()])->toArray();
 
-        foreach ($roles as $role) {
-            Role::firstOrCreate(['name' => $role]);
-        }
+        Role::insertOrIgnore($roles);
 
-        echo "✅ Roles seeded successfully!";
+        $this->command->info("✅ Roles seeded successfully!");
     }
 }

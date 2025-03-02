@@ -21,7 +21,8 @@ class StoreUserRequest extends FormRequest
             'postcode' => 'required|digits:6',
             'password' => 'required|confirmed',
             'gender' => 'required',
-            'roles' => 'required|array',
+            'roles' => ['required', 'array'], // Must be an array
+        'roles.*' => ['exists:roles,id'], // Each role must exist in roles table
             'hobbies' => 'nullable|array',
             'city_id' => 'required|exists:cities,id',
             'state_id' => 'required|exists:states,id',
