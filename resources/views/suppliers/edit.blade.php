@@ -3,7 +3,7 @@
 @section('content')
     <h2>Edit Supplier</h2>
 
-    <form action="{{ route('suppliers.update', $supplier->id) }}" method="POST">
+    <form id="editSupplierForm" action="{{ route('suppliers.update', $supplier->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -87,4 +87,67 @@
 
         <button type="submit" class="btn btn-success">Update</button>
     </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
+    	
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#editSupplierForm').validate({
+                rules: {
+                    name: {
+                        required: true,
+                        minlength: 3
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    contact_number: {
+                        required: true,
+                        digits: true
+                    },
+                    // Add more validation rules as needed
+                },
+                submitHandler: function(form) {
+                    $.ajax({
+                        url: $(form).attr('action'),
+                        method: 'POST',
+                        data: $(form).serialize(),
+                        success: function(response) {
+    $('#formErrors').html('<div class="alert alert-success">Supplier updated successfully!</div>');
+
+    // Show a Toastr success notification
+    toastr.success("Supplier updated successfully!", "Success");
+
+    // Redirect after 2 seconds
+    setTimeout(function() {
+        window.location.href = "{{ route('suppliers.index') }}";
+    }, 2000);
+},
+
+            error: function(xhr) {
+                $('#submitBtn').prop('disabled', false).text('Submit');
+
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    var errors = xhr.responseJSON.errors;
+                    var errorHtml = '<div class="alert alert-danger"><ul>';
+                    $.each(errors, function(key, value) {
+                        errorHtml += '<li>' + value + '</li>';
+                        toastr.error(value, "Error"); // Show Toastr error for each validation error
+                    });
+                    errorHtml += '</ul></div>';
+                    $('#formErrors').html(errorHtml);
+                } else {
+                    toastr.error("An unexpected error occurred. Please try again.", "Error");
+                }
+            }
+                    });
+                }
+            });
+        });
+    </script>
 @endsection

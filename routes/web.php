@@ -62,5 +62,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Customer Management
+    Route::middleware(['can:manage-customers'])->group(function () {
     Route::resource('customers', CustomerController::class);
+});
 });

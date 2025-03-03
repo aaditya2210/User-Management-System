@@ -21,7 +21,9 @@
             @endif
 
             {{-- Edit User Form --}}
-            <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+            {{-- <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data"> --}}
+                <form id="editUserForm" action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                <div id="formErrors"></div>
                 @csrf
                 @method('PUT')
 
@@ -125,7 +127,7 @@
     </div>
 </div>
 
-{{-- JavaScript for AJAX Dynamic City Dropdown --}}
+{{-- JavaScript for AJAX Dynamic City Dropdown
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -154,6 +156,141 @@
             $('#state_id').trigger('change');
         }
     });
+</script> --}}
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // $(document).ready(function() {
+    //     // Handle form submission via AJAX
+    //     $('#editUserForm').on('submit', function(e) {
+    //         e.preventDefault(); // Prevent default form submission
+            
+    //         var formData = new FormData(this);
+    //         formData.append('_method', 'PUT'); // Laravel requires PUT for updates
+
+    //         $.ajax({
+    //             url: "{{ route('users.update', $user->id) }}",
+    //             type: "POST", // Always POST when using FormData with `_method`
+    //             data: formData,
+    //             contentType: false,
+    //             processData: false,
+    //             success: function(response) {
+    //                 alert('User updated successfully!');
+    //                 window.location.href = "{{ route('users.index') }}"; // Redirect after success
+    //             },
+    //             error: function(xhr) {
+    //                 if (xhr.responseJSON && xhr.responseJSON.errors) {
+    //                     var errors = xhr.responseJSON.errors;
+    //                     var errorHtml = '<div class="alert alert-danger"><ul>';
+    //                     $.each(errors, function(key, value) {
+    //                         errorHtml += '<li>' + value + '</li>';
+    //                     });
+    //                     errorHtml += '</ul></div>';
+    //                     $('#formErrors').html(errorHtml);
+    //                 } else {
+    //                     alert('An error occurred. Please try again.');
+    //                 }
+    //             }
+    //         });
+    //     });
+
+    //     // Handle state-city dynamic dropdown
+    //     $('#state_id').on('change', function() {
+    //         var stateId = $(this).val();
+    //         if (stateId) {
+    //             $.ajax({
+    //                 url: "{{ route('get.cities') }}",
+    //                 type: "GET",
+    //                 data: { state_id: stateId },
+    //                 success: function(response) {
+    //                     $('#city_id').empty().append('<option value="">Select City</option>');
+    //                     $.each(response, function(key, city) {
+    //                         $('#city_id').append('<option value="' + city.id + '">' + city.name + '</option>');
+    //                     });
+    //                 }
+    //             });
+    //         } else {
+    //             $('#city_id').empty().append('<option value="">Select City</option>');
+    //         }
+    //     });
+
+    //     // Trigger change event on page load if editing a user
+    //     var selectedState = $('#state_id').val();
+    //     if (selectedState) {
+    //         $('#state_id').trigger('change');
+    //     }
+    // });
+
+    $(document).ready(function() {
+    // Handle form submission via AJAX
+    $('#editUserForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        var formData = new FormData(this);
+        formData.append('_method', 'PUT'); // Laravel requires PUT for updates
+
+        $.ajax({
+            url: "{{ route('users.update', $user->id) }}",
+            type: "POST", // Always POST when using FormData with `_method`
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $('#formErrors').html('<div class="alert alert-success">User updated successfully!</div>');
+
+                setTimeout(function() {
+                    window.location.href = "{{ route('users.index') }}"; // Redirect after success
+                }, 2000); // Redirect after 2 seconds
+            },
+            error: function(xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    var errors = xhr.responseJSON.errors;
+                    var errorHtml = '<div class="alert alert-danger"><ul>';
+                    $.each(errors, function(key, value) {
+                        errorHtml += '<li>' + value + '</li>';
+                    });
+                    errorHtml += '</ul></div>';
+                    $('#formErrors').html(errorHtml);
+                } else {
+                    $('#formErrors').html('<div class="alert alert-danger">An error occurred. Please try again.</div>');
+                }
+            }
+        });
+    });
+
+    // Handle state-city dynamic dropdown
+    $('#state_id').on('change', function() {
+        var stateId = $(this).val();
+        if (stateId) {
+            $.ajax({
+                url: "{{ route('get.cities') }}",
+                type: "GET",
+                data: { state_id: stateId },
+                success: function(response) {
+                    $('#city_id').empty().append('<option value="">Select City</option>');
+                    $.each(response, function(key, city) {
+                        $('#city_id').append('<option value="' + city.id + '">' + city.name + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#city_id').empty().append('<option value="">Select City</option>');
+        }
+    });
+
+    // Trigger change event on page load if editing a user
+    var selectedState = $('#state_id').val();
+    if (selectedState) {
+        $('#state_id').trigger('change');
+    }
+});
+
 </script>
+
+
 
 @endsection

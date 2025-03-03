@@ -3,6 +3,7 @@
 @section('title', 'Users List')
 
 @section('content')
+
 <div class="container mt-4">
     @php
         $loggedInUser = Auth::user();
@@ -292,25 +293,92 @@
         }
 
         // Handle user deletion
-        function deleteUser(userId) {
-            if (!confirm("Are you sure you want to delete this user?")) return;
+        // function deleteUser(userId) {
+        //     if (!confirm("Are you sure you want to delete this user?")) return;
 
-            $.ajax({
-                url: `/api/users/${userId}`,
-                type: "DELETE",
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("access_token")
-                },
-                success: function() {
-                    alert("User deleted successfully.");
-                    loadUsers(1, document.getElementById("searchInput").value);
-                },
-                error: function(xhr) {
-                    alert("Error deleting user: " + xhr.responseText);
-                    console.error("Error deleting user:", xhr.responseText);
-                }
-            });
+        //     $.ajax({
+        //         url: `/api/users/${userId}`,
+        //         type: "DELETE",
+        //         headers: {
+        //             Authorization: "Bearer " + localStorage.getItem("access_token")
+        //         },
+        //         success: function() {
+        //             alert("User deleted successfully.");
+        //             loadUsers(1, document.getElementById("searchInput").value);
+        //         },
+        //         error: function(xhr) {
+        //             alert("Error deleting user: " + xhr.responseText);
+        //             console.error("Error deleting user:", xhr.responseText);
+        //         }
+        //     });
+        // }
+
+
+
+        function deleteUser(userId) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+
+    $.ajax({
+        url: `/api/users/${userId}`,
+        type: "DELETE",
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("access_token")
+        },
+        success: function() {
+            showSuccessNotification("User deleted successfully!");
+
+            // Wait 1 second before reloading the current page of users
+            setTimeout(() => {
+                let currentPage = document.querySelector(".pagination .active a")?.textContent || 1;
+                loadUsers(currentPage, document.getElementById("searchInput").value);
+            }, 1000);
+        },
+        error: function(xhr) {
+            showErrorNotification("Error deleting user: " + xhr.responseText);
+            console.error("Error deleting user:", xhr.responseText);
         }
+    });
+}
+
+
+// Function to show a success notification
+function showSuccessNotification(message) {
+    const alertContainer = document.createElement("div");
+    alertContainer.className = "alert alert-success alert-dismissible fade show";
+    alertContainer.role = "alert";
+    alertContainer.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+    document.body.prepend(alertContainer); // Append the alert to the top of the page
+
+    // Auto-dismiss the alert after 3 seconds
+    setTimeout(() => {
+        alertContainer.classList.remove("show");
+        setTimeout(() => alertContainer.remove(), 500);
+    }, 3000);
+}
+
+// Function to show an error notification
+function showErrorNotification(message) {
+    const alertContainer = document.createElement("div");
+    alertContainer.className = "alert alert-danger alert-dismissible fade show";
+    alertContainer.role = "alert";
+    alertContainer.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+    document.body.prepend(alertContainer);
+
+    setTimeout(() => {
+        alertContainer.classList.remove("show");
+        setTimeout(() => alertContainer.remove(), 500);
+    }, 3000);
+}
+
+
 
         // Search functionality
         document.getElementById("searchInput").addEventListener("keyup", function() {

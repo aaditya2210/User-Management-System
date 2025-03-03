@@ -44,6 +44,8 @@
         <div id="paginationLinks" class="mt-3"></div>
     </div>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         function fetchSuppliers(page = 1) {
             let token = localStorage.getItem("access_token"); // Retrieve token from local storage
@@ -54,14 +56,14 @@
                 headers: {
                     Authorization: "Bearer " + token
                 },
-                success: function (response) {
+                success: function(response) {
                     console.log("API Response:", response); // Debugging log
 
                     let tableBody = $("#suppliersTable tbody");
                     tableBody.empty(); // Clear existing table data
 
                     if (response.data && response.data.length > 0) {
-                        response.data.forEach(function (supplier) {
+                        response.data.forEach(function(supplier) {
                             tableBody.append(`
                                 <tr>
                                     <td>${supplier.name}</td>
@@ -91,7 +93,8 @@
                             `);
                         });
                     } else {
-                        tableBody.append(`<tr><td colspan="16" class="text-center">No suppliers found.</td></tr>`);
+                        tableBody.append(
+                            `<tr><td colspan="16" class="text-center">No suppliers found.</td></tr>`);
                     }
 
                     // Update Pagination Links
@@ -99,121 +102,149 @@
                     paginationLinks.empty();
                     if (response.links) {
                         response.links.forEach(link => {
-                            paginationLinks.append(`<a href="#" onclick="fetchSuppliers(${link.label})" class="btn btn-sm ${link.active ? 'btn-primary' : 'btn-light'}">${link.label}</a> `);
+                            paginationLinks.append(
+                                `<a href="#" onclick="fetchSuppliers(${link.label})" class="btn btn-sm ${link.active ? 'btn-primary' : 'btn-light'}">${link.label}</a> `
+                                );
                         });
                     }
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error("XHR Response:", xhr);
-                    alert("Error fetching data: " + (xhr.responseJSON?.error || xhr.responseText || "Unknown error"));
+                    alert("Error fetching data: " + (xhr.responseJSON?.error || xhr.responseText ||
+                        "Unknown error"));
                 }
             });
         }
 
         function deleteSupplier(id) {
-    if (!confirm('Are you sure you want to delete this supplier?')) return;
+            if (!confirm('Are you sure you want to delete this supplier?')) return;
 
-    $.ajax({
-        url: `/api/suppliers/${id}`,
-        method: 'POST',  // Change from DELETE to POST
-        data: { _method: 'DELETE' },  // Laravel will recognize this as a DELETE request
-        headers: {
-            'Authorization': "Bearer " + localStorage.getItem("access_token"),
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            'Accept': 'application/json'
-        },
-        success: function () {
-            alert('Supplier deleted successfully!');
-            fetchSuppliers(); // Refresh supplier list
-        },
-        error: function (xhr) {
-            alert(xhr.responseJSON?.message || "Failed to delete supplier. Ensure you are authenticated.");
-            console.error("Error:", xhr.responseText);
+            $.ajax({
+                url: `/api/suppliers/${id}`,
+                method: 'POST', // Change from DELETE to POST
+                data: {
+                    _method: 'DELETE'
+                }, // Laravel will recognize this as a DELETE request
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("access_token"),
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                },
+                success: function(response) {
+                    $('#formErrors').html('<div class="alert alert-success">Supplier deleted successfully!</div>');
+
+                    // Show a Toastr success notification
+                    toastr.success("Supplier deleted successfully!", "Success");
+
+                    // Redirect after 2 seconds
+                    setTimeout(function() {
+                        window.location.href = "{{ route('suppliers.index') }}";
+                    }, 2000);
+                },
+
+                error: function(xhr) {
+                    $('#submitBtn').prop('disabled', false).text('Submit');
+
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        var errors = xhr.responseJSON.errors;
+                        var errorHtml = '<div class="alert alert-danger"><ul>';
+                        $.each(errors, function(key, value) {
+                            errorHtml += '<li>' + value + '</li>';
+                            toastr.error(value, "Error"); // Show Toastr error for each validation error
+                        });
+                        errorHtml += '</ul></div>';
+                        $('#formErrors').html(errorHtml);
+                    } else {
+                        toastr.error("An unexpected error occurred. Please try again.", "Error");
+                    }
+                }
+            });
         }
-    });
-}
-// ✅ Open Edit Supplier Modal (Prefill Data)
-function editSupplier(id) {
-    let token = localStorage.getItem("access_token");
+        // ✅ Open Edit Supplier Modal (Prefill Data)
+        function editSupplier(id) {
+            let token = localStorage.getItem("access_token");
 
-    $.ajax({
-        url: `/api/suppliers/${id}`,
-        method: "GET",
-        headers: {
-            Authorization: "Bearer " + token
-        },
-        success: function (supplier) {
-            $("#editSupplierModal").modal("show"); // Show modal
+            $.ajax({
+                url: `/api/suppliers/${id}`,
+                method: "GET",
+                headers: {
+                    Authorization: "Bearer " + token
+                },
+                success: function(supplier) {
+                    $("#editSupplierModal").modal("show"); // Show modal
 
-            // Prefill form fields
-            $("#editSupplierId").val(supplier.id);
-            $("#editName").val(supplier.name);
-            $("#editEmail").val(supplier.email);
-            $("#editContactNumber").val(supplier.contact_number);
-            $("#editAddress").val(supplier.address);
-            $("#editCompanyName").val(supplier.company_name);
-            $("#editGstNumber").val(supplier.gst_number);
-            $("#editWebsite").val(supplier.website);
-            $("#editCountry").val(supplier.country);
-            $("#editState").val(supplier.state);
-            $("#editCity").val(supplier.city);
-            $("#editPostalCode").val(supplier.postal_code);
-            $("#editContactPerson").val(supplier.contact_person);
-            $("#editStatus").val(supplier.status);
-            $("#editContractStartDate").val(supplier.contract_start_date);
-            $("#editContractEndDate").val(supplier.contract_end_date);
-        },
-        error: function (xhr) {
-            console.error(xhr.responseText);
-            alert("Error fetching supplier details.");
+                    // Prefill form fields
+                    $("#editSupplierId").val(supplier.id);
+                    $("#editName").val(supplier.name);
+                    $("#editEmail").val(supplier.email);
+                    $("#editContactNumber").val(supplier.contact_number);
+                    $("#editAddress").val(supplier.address);
+                    $("#editCompanyName").val(supplier.company_name);
+                    $("#editGstNumber").val(supplier.gst_number);
+                    $("#editWebsite").val(supplier.website);
+                    $("#editCountry").val(supplier.country);
+                    $("#editState").val(supplier.state);
+                    $("#editCity").val(supplier.city);
+                    $("#editPostalCode").val(supplier.postal_code);
+                    $("#editContactPerson").val(supplier.contact_person);
+                    $("#editStatus").val(supplier.status);
+                    $("#editContractStartDate").val(supplier.contract_start_date);
+                    $("#editContractEndDate").val(supplier.contract_end_date);
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    alert("Error fetching supplier details.");
+                }
+            });
         }
-    });
-}
 
-function updateSupplier() {
-    let token = localStorage.getItem("access_token");
-    let supplierId = $("#editSupplierId").val();
-    let formData = $("#editSupplierForm").serialize() + "&_method=PUT";
+        function updateSupplier() {
+            let token = localStorage.getItem("access_token");
+            let supplierId = $("#editSupplierId").val();
+            let formData = $("#editSupplierForm").serialize() + "&_method=PUT";
 
-    console.log("Updating Supplier ID:", supplierId);  // Debugging log
-    console.log("Form Data:", formData);               // Debugging log
+            console.log("Updating Supplier ID:", supplierId); // Debugging log
+            console.log("Form Data:", formData); // Debugging log
 
-    $.ajax({
-        url: `/api/suppliers/${supplierId}`,
-        method: "POST", // Laravel understands this as PUT because of _method=PUT
-        data: formData,
-        headers: {
-            'Authorization': "Bearer " + token,
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            'Accept': 'application/json'
-        },
-        success: function (response) {
-            console.log("Update Success:", response);
-            alert("Supplier updated successfully!");
-            $("#editSupplierModal").modal("hide");
-            fetchSuppliers(); // Refresh the list
-        },
-        error: function (xhr) {
-            console.error("Update Error:", xhr.responseText);
-            alert("Failed to update supplier. Check console logs.");
+            $.ajax({
+                url: `/api/suppliers/${supplierId}`,
+                method: "POST", // Laravel understands this as PUT because of _method=PUT
+                data: formData,
+                headers: {
+                    'Authorization': "Bearer " + token,
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                },
+                success: function(response) {
+                    console.log("Update Success:", response);
+                    alert("Supplier updated successfully!");
+                    $("#editSupplierModal").modal("hide");
+                    fetchSuppliers(); // Refresh the list
+                },
+                error: function(xhr) {
+                    console.error("Update Error:", xhr.responseText);
+                    alert("Failed to update supplier. Check console logs.");
+                }
+            });
         }
-    });
-}
 
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             fetchSuppliers();
 
-            $('#exportCSV').click(function () {
-                window.location.href = "/api/suppliers/export/csv?token=" + localStorage.getItem("access_token");
+            $('#exportCSV').click(function() {
+                window.location.href = "/api/suppliers/export/csv?token=" + localStorage.getItem(
+                    "access_token");
             });
 
-            $('#exportExcel').click(function () {
-                window.location.href = "/api/suppliers/export/excel?token=" + localStorage.getItem("access_token");
+            $('#exportExcel').click(function() {
+                window.location.href = "/api/suppliers/export/excel?token=" + localStorage.getItem(
+                    "access_token");
             });
 
-            $('#exportPDF').click(function () {
-                window.location.href = "/api/suppliers/export/pdf?token=" + localStorage.getItem("access_token");
+            $('#exportPDF').click(function() {
+                window.location.href = "/api/suppliers/export/pdf?token=" + localStorage.getItem(
+                    "access_token");
             });
         });
     </script>

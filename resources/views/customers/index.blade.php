@@ -43,6 +43,8 @@
         <div id="paginationLinks" class="mt-3"></div>
     </div>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         function fetchCustomers(page = 1) {
             let token = localStorage.getItem("access_token"); // Retrieve API token
@@ -53,14 +55,14 @@
                 headers: {
                     Authorization: "Bearer " + token
                 },
-                success: function (response) {
+                success: function(response) {
                     console.log("API Response:", response); // Debugging log
 
                     let tableBody = $("#customersTable tbody");
                     tableBody.empty();
 
                     if (response.data && response.data.length > 0) {
-                        response.data.forEach(function (customer) {
+                        response.data.forEach(function(customer) {
                             tableBody.append(`
                                 <tr>
                                     <td>${customer.name}</td>
@@ -85,7 +87,8 @@
                             `);
                         });
                     } else {
-                        tableBody.append(`<tr><td colspan="13" class="text-center">No customers found.</td></tr>`);
+                        tableBody.append(
+                            `<tr><td colspan="13" class="text-center">No customers found.</td></tr>`);
                     }
 
                     // Update Pagination Links
@@ -93,13 +96,16 @@
                     paginationLinks.empty();
                     if (response.links) {
                         response.links.forEach(link => {
-                            paginationLinks.append(`<a href="#" onclick="fetchCustomers(${link.label})" class="btn btn-sm ${link.active ? 'btn-primary' : 'btn-light'}">${link.label}</a> `);
+                            paginationLinks.append(
+                                `<a href="#" onclick="fetchCustomers(${link.label})" class="btn btn-sm ${link.active ? 'btn-primary' : 'btn-light'}">${link.label}</a> `
+                                );
                         });
                     }
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error("XHR Response:", xhr);
-                    alert("Error fetching data: " + (xhr.responseJSON?.error || xhr.responseText || "Unknown error"));
+                    alert("Error fetching data: " + (xhr.responseJSON?.error || xhr.responseText ||
+                        "Unknown error"));
                 }
             });
         }
@@ -111,41 +117,66 @@
         function deleteCustomer(id) {
             if (!confirm('Are you sure you want to delete this customer?')) return;
 
-    $.ajax({
-        url: `/api/customers/${id}`,
-        method: 'POST',  // Change from DELETE to POST
-        data: { _method: 'DELETE' },  // Laravel will recognize this as a DELETE request
-        headers: {
-            'Authorization': "Bearer " + localStorage.getItem("access_token"),
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            'Accept': 'application/json'
-        },
-        success: function () {
-            alert('Customer deleted successfully!');
-            fetchCustomers(); // Refresh supplier list
-        },
-        error: function (xhr) {
-            alert(xhr.responseJSON?.message || "Failed to delete Customer. Ensure you are authenticated.");
-            console.error("Error:", xhr.responseText);
+            $.ajax({
+                url: `/api/customers/${id}`,
+                method: 'POST', // Change from DELETE to POST
+                data: {
+                    _method: 'DELETE'
+                }, // Laravel will recognize this as a DELETE request
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("access_token"),
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                },
+                success: function(response) {
+                    $('#formErrors').html('<div class="alert alert-success">Customer deleted successfully!</div>');
+
+                    // Show a Toastr success notification
+                    toastr.success("Customer deleted successfully!", "Success");
+
+                    // Redirect after 2 seconds
+                    setTimeout(function() {
+                        window.location.href = "{{ route('customers.index') }}";
+                    }, 2000);
+                },
+
+                error: function(xhr) {
+                    $('#submitBtn').prop('disabled', false).text('Submit');
+
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        var errors = xhr.responseJSON.errors;
+                        var errorHtml = '<div class="alert alert-danger"><ul>';
+                        $.each(errors, function(key, value) {
+                            errorHtml += '<li>' + value + '</li>';
+                            toastr.error(value, "Error"); // Show Toastr error for each validation error
+                        });
+                        errorHtml += '</ul></div>';
+                        $('#formErrors').html(errorHtml);
+                    } else {
+                        toastr.error("An unexpected error occurred. Please try again.", "Error");
+                    }
+                }
+            });
         }
-    });
-}
 
-       
 
-        $(document).ready(function () {
+
+        $(document).ready(function() {
             fetchCustomers();
 
-            $('#exportCSV').click(function () {
-                window.location.href = "/api/customers/export/csv?token=" + localStorage.getItem("access_token");
+            $('#exportCSV').click(function() {
+                window.location.href = "/api/customers/export/csv?token=" + localStorage.getItem(
+                    "access_token");
             });
 
-            $('#exportExcel').click(function () {
-                window.location.href = "/api/customers/export/excel?token=" + localStorage.getItem("access_token");
+            $('#exportExcel').click(function() {
+                window.location.href = "/api/customers/export/excel?token=" + localStorage.getItem(
+                    "access_token");
             });
 
-            $('#exportPDF').click(function () {
-                window.location.href = "/api/customers/export/pdf?token=" + localStorage.getItem("access_token");
+            $('#exportPDF').click(function() {
+                window.location.href = "/api/customers/export/pdf?token=" + localStorage.getItem(
+                    "access_token");
             });
         });
     </script>
