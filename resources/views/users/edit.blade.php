@@ -10,20 +10,10 @@
         </div>
         <div class="card-body">
             {{-- Display Validation Errors --}}
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            <div id="formErrors"></div>
 
             {{-- Edit User Form --}}
-            {{-- <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data"> --}}
-                <form id="editUserForm" action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
-                <div id="formErrors"></div>
+            <form id="editUserForm" action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -61,7 +51,7 @@
                     {{-- Gender --}}
                     <div class="col-md-6 mb-3">
                         <label for="gender" class="form-label">Gender</label>
-                        <select name="gender" class="form-control" id="gender">
+                        <select name="gender" class="form-control" id="gender" required>
                             <option value="Male" {{ $user->gender == 'Male' ? 'selected' : '' }}>Male</option>
                             <option value="Female" {{ $user->gender == 'Female' ? 'selected' : '' }}>Female</option>
                             <option value="Other" {{ $user->gender == 'Other' ? 'selected' : '' }}>Other</option>
@@ -71,7 +61,7 @@
                     {{-- State Dropdown --}}
                     <div class="col-md-6 mb-3">
                         <label for="state_id" class="form-label">State</label>
-                        <select name="state_id" id="state_id" class="form-control">
+                        <select name="state_id" id="state_id" class="form-control" required>
                             <option value="">Select State</option>
                             @foreach ($states as $state)
                                 <option value="{{ $state->id }}" {{ $user->state_id == $state->id ? 'selected' : '' }}>{{ $state->name }}</option>
@@ -82,23 +72,13 @@
                     {{-- City Dropdown --}}
                     <div class="col-md-6 mb-3">
                         <label for="city_id" class="form-label">City</label>
-                        <select name="city_id" id="city_id" class="form-control">
+                        <select name="city_id" id="city_id" class="form-control" required>
                             <option value="">Select City</option>
                             @foreach ($cities as $city)
                                 <option value="{{ $city->id }}" {{ $user->city_id == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
                             @endforeach
                         </select>
                     </div>
-
-                    {{-- Roles --}}
-                    {{-- <div class="col-md-12 mb-3">
-                        <label for="roles" class="form-label">Roles</label>
-                        <select name="roles[]" id="roles" class="form-control" multiple>
-                            <option value="Admin" {{ in_array('Admin', json_decode($user->roles, true) ?? []) ? 'selected' : '' }}>Admin</option>
-                            <option value="Editor" {{ in_array('Editor', json_decode($user->roles, true) ?? []) ? 'selected' : '' }}>Editor</option>
-                            <option value="User" {{ in_array('User', json_decode($user->roles, true) ?? []) ? 'selected' : '' }}>User</option>
-                        </select>
-                    </div> --}}
 
                     {{-- File Uploads --}}
                     <div class="col-md-12 mb-3">
@@ -127,10 +107,128 @@
     </div>
 </div>
 
-{{-- JavaScript for AJAX Dynamic City Dropdown
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
 <script>
     $(document).ready(function() {
+        // Handle form submission via AJAX
+        $('#editUserForm').validate({
+            rules: {
+                first_name: {
+                    required: true,
+                    minlength: 2
+                },
+                last_name: {
+                    required: true,
+                    minlength: 2
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                contact_number: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 15
+                },
+                postcode: {
+                    required: true,
+                    digits: true,
+                    minlength: 5,
+                    maxlength: 10
+                },
+                gender: {
+                    required: true
+                },
+                state_id: {
+                    required: true
+                },
+                city_id: {
+                    required: true
+                }
+            },
+            messages: {
+                first_name: {
+                    required: "Please enter the first name",
+                    minlength: "First name must be at least 2 characters long"
+                },
+                last_name: {
+                    required: "Please enter the last name",
+                    minlength: "Last name must be at least 2 characters long"
+                },
+                email: {
+                    required: "Please enter the email",
+                    email: "Please enter a valid email address"
+                },
+                contact_number: {
+                    required: "Please enter the contact number",
+                    digits: "Please enter only digits",
+                    minlength: "Contact number must be at least 10 digits long",
+                    maxlength: "Contact number must be no more than 15 digits long"
+                },
+                postcode: {
+                    required: "Please enter the postcode",
+                    digits: "Please enter only digits",
+                    minlength: "Postcode must be at least 5 digits long",
+                    maxlength: "Postcode must be no more than 10 digits long"
+                },
+                gender: {
+                    required: "Please select the gender"
+                },
+                state_id: {
+                    required: "Please select the state"
+                },
+                city_id: {
+                    required: "Please select the city"
+                }
+            },
+            errorPlacement: function(error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid').removeClass('is-valid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid').addClass('is-valid');
+            },
+            submitHandler: function(form) {
+                var formData = new FormData(form);
+                formData.append('_method', 'PUT'); // Laravel requires PUT for updates
+
+                $.ajax({
+                    url: "{{ route('users.update', $user->id) }}",
+                    type: "POST", // Always POST when using FormData with `_method`
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $('#formErrors').html('<div class="alert alert-success">User updated successfully!</div>');
+
+                        setTimeout(function() {
+                            window.location.href = "{{ route('users.index') }}"; // Redirect after success
+                        }, 1000); // Redirect after 2 seconds
+                    },
+                    error: function(xhr) {
+                        if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            var errors = xhr.responseJSON.errors;
+                            var errorHtml = '<div class="alert alert-danger"><ul>';
+                            $.each(errors, function(key, value) {
+                                errorHtml += '<li>' + value + '</li>';
+                            });
+                            errorHtml += '</ul></div>';
+                            $('#formErrors').html(errorHtml);
+                        } else {
+                            $('#formErrors').html('<div class="alert alert-danger">An error occurred. Please try again.</div>');
+                        }
+                    }
+                });
+            }
+        });
+
+        // Handle state-city dynamic dropdown
         $('#state_id').on('change', function() {
             var stateId = $(this).val();
             if (stateId) {
@@ -156,141 +254,5 @@
             $('#state_id').trigger('change');
         }
     });
-</script> --}}
-
-
-
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    // $(document).ready(function() {
-    //     // Handle form submission via AJAX
-    //     $('#editUserForm').on('submit', function(e) {
-    //         e.preventDefault(); // Prevent default form submission
-            
-    //         var formData = new FormData(this);
-    //         formData.append('_method', 'PUT'); // Laravel requires PUT for updates
-
-    //         $.ajax({
-    //             url: "{{ route('users.update', $user->id) }}",
-    //             type: "POST", // Always POST when using FormData with `_method`
-    //             data: formData,
-    //             contentType: false,
-    //             processData: false,
-    //             success: function(response) {
-    //                 alert('User updated successfully!');
-    //                 window.location.href = "{{ route('users.index') }}"; // Redirect after success
-    //             },
-    //             error: function(xhr) {
-    //                 if (xhr.responseJSON && xhr.responseJSON.errors) {
-    //                     var errors = xhr.responseJSON.errors;
-    //                     var errorHtml = '<div class="alert alert-danger"><ul>';
-    //                     $.each(errors, function(key, value) {
-    //                         errorHtml += '<li>' + value + '</li>';
-    //                     });
-    //                     errorHtml += '</ul></div>';
-    //                     $('#formErrors').html(errorHtml);
-    //                 } else {
-    //                     alert('An error occurred. Please try again.');
-    //                 }
-    //             }
-    //         });
-    //     });
-
-    //     // Handle state-city dynamic dropdown
-    //     $('#state_id').on('change', function() {
-    //         var stateId = $(this).val();
-    //         if (stateId) {
-    //             $.ajax({
-    //                 url: "{{ route('get.cities') }}",
-    //                 type: "GET",
-    //                 data: { state_id: stateId },
-    //                 success: function(response) {
-    //                     $('#city_id').empty().append('<option value="">Select City</option>');
-    //                     $.each(response, function(key, city) {
-    //                         $('#city_id').append('<option value="' + city.id + '">' + city.name + '</option>');
-    //                     });
-    //                 }
-    //             });
-    //         } else {
-    //             $('#city_id').empty().append('<option value="">Select City</option>');
-    //         }
-    //     });
-
-    //     // Trigger change event on page load if editing a user
-    //     var selectedState = $('#state_id').val();
-    //     if (selectedState) {
-    //         $('#state_id').trigger('change');
-    //     }
-    // });
-
-    $(document).ready(function() {
-    // Handle form submission via AJAX
-    $('#editUserForm').on('submit', function(e) {
-        e.preventDefault(); // Prevent default form submission
-        
-        var formData = new FormData(this);
-        formData.append('_method', 'PUT'); // Laravel requires PUT for updates
-
-        $.ajax({
-            url: "{{ route('users.update', $user->id) }}",
-            type: "POST", // Always POST when using FormData with `_method`
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                $('#formErrors').html('<div class="alert alert-success">User updated successfully!</div>');
-
-                setTimeout(function() {
-                    window.location.href = "{{ route('users.index') }}"; // Redirect after success
-                }, 2000); // Redirect after 2 seconds
-            },
-            error: function(xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    var errors = xhr.responseJSON.errors;
-                    var errorHtml = '<div class="alert alert-danger"><ul>';
-                    $.each(errors, function(key, value) {
-                        errorHtml += '<li>' + value + '</li>';
-                    });
-                    errorHtml += '</ul></div>';
-                    $('#formErrors').html(errorHtml);
-                } else {
-                    $('#formErrors').html('<div class="alert alert-danger">An error occurred. Please try again.</div>');
-                }
-            }
-        });
-    });
-
-    // Handle state-city dynamic dropdown
-    $('#state_id').on('change', function() {
-        var stateId = $(this).val();
-        if (stateId) {
-            $.ajax({
-                url: "{{ route('get.cities') }}",
-                type: "GET",
-                data: { state_id: stateId },
-                success: function(response) {
-                    $('#city_id').empty().append('<option value="">Select City</option>');
-                    $.each(response, function(key, city) {
-                        $('#city_id').append('<option value="' + city.id + '">' + city.name + '</option>');
-                    });
-                }
-            });
-        } else {
-            $('#city_id').empty().append('<option value="">Select City</option>');
-        }
-    });
-
-    // Trigger change event on page load if editing a user
-    var selectedState = $('#state_id').val();
-    if (selectedState) {
-        $('#state_id').trigger('change');
-    }
-});
-
 </script>
-
-
-
 @endsection

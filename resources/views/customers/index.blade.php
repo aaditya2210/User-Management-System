@@ -43,9 +43,34 @@
         <div id="paginationLinks" class="mt-3"></div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this customer?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let deleteCustomerId = null;
+
         function fetchCustomers(page = 1) {
             let token = localStorage.getItem("access_token"); // Retrieve API token
 
@@ -80,7 +105,7 @@
                                     @can('manage-customers')
                                     <td>
                                         <a href="/customers/${customer.id}/edit" class="btn btn-warning btn-sm">Edit</a>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${customer.id})">Delete</button>
+                                        <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmation(${customer.id})">Delete</button>
                                     </td>
                                     @endcan
                                 </tr>
@@ -110,13 +135,18 @@
             });
         }
 
+        function showDeleteConfirmation(id) {
+            deleteCustomerId = id;
+            $('#deleteConfirmationModal').modal('show');
+        }
 
-
-
+        $('#confirmDeleteButton').click(function() {
+            if (deleteCustomerId) {
+                deleteCustomer(deleteCustomerId);
+            }
+        });
 
         function deleteCustomer(id) {
-            if (!confirm('Are you sure you want to delete this customer?')) return;
-
             $.ajax({
                 url: `/api/customers/${id}`,
                 method: 'POST', // Change from DELETE to POST
@@ -129,37 +159,16 @@
                     'Accept': 'application/json'
                 },
                 success: function(response) {
-                    $('#formErrors').html('<div class="alert alert-success">Customer deleted successfully!</div>');
-
-                    // Show a Toastr success notification
+                    $('#deleteConfirmationModal').modal('hide');
                     toastr.success("Customer deleted successfully!", "Success");
-
-                    // Redirect after 2 seconds
-                    setTimeout(function() {
-                        window.location.href = "{{ route('customers.index') }}";
-                    }, 2000);
+                    fetchCustomers(); // Refresh the list
                 },
-
                 error: function(xhr) {
-                    $('#submitBtn').prop('disabled', false).text('Submit');
-
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        var errors = xhr.responseJSON.errors;
-                        var errorHtml = '<div class="alert alert-danger"><ul>';
-                        $.each(errors, function(key, value) {
-                            errorHtml += '<li>' + value + '</li>';
-                            toastr.error(value, "Error"); // Show Toastr error for each validation error
-                        });
-                        errorHtml += '</ul></div>';
-                        $('#formErrors').html(errorHtml);
-                    } else {
-                        toastr.error("An unexpected error occurred. Please try again.", "Error");
-                    }
+                    $('#deleteConfirmationModal').modal('hide');
+                    toastr.error("An error occurred while deleting the customer.", "Error");
                 }
             });
         }
-
-
 
         $(document).ready(function() {
             fetchCustomers();

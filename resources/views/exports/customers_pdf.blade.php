@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer List</title>
     <style>
-        body { font-family: Arial, sans-serif; }
+        body { font-family: Arial, sans-serif; font-size: 8px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th, td { border: 1px solid #ddd; padding: 2px; text-align: left; }
         th { background-color: #f4f4f4; }
+        .page-break { page-break-after: always; }
+        th, td { word-wrap: break-word; }
     </style>
 </head>
 <body>
@@ -16,22 +18,45 @@
     <table>
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Contact Number</th>
-                <th>Company Name</th>
-                <th>Job Title</th>
-                <th>Gender</th>
-                <th>Date of Birth</th>
-                <th>Nationality</th>
-                <th>Customer Type</th>
-                <th>Preferred Contact Method</th>
-                <th>Newsletter Subscription</th>
-                <th>Account Balance</th>
+                <th style="width: 10%;">Name</th>
+                <th style="width: 15%;">Email</th>
+                <th style="width: 10%;">Contact Number</th>
+                <th style="width: 10%;">Company Name</th>
+                <th style="width: 10%;">Job Title</th>
+                <th style="width: 5%;">Gender</th>
+                <th style="width: 10%;">Date of Birth</th>
+                <th style="width: 10%;">Nationality</th>
+                <th style="width: 10%;">Customer Type</th>
+                <th style="width: 10%;">Preferred Contact Method</th>
+                <th style="width: 10%;">Newsletter Subscription</th>
+                <th style="width: 10%;">Account Balance</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($customers as $customer)
+            @foreach ($customers as $index => $customer)
+                @if ($index > 0 && $index % 25 == 0)
+                    </tbody>
+                </table>
+                <div class="page-break"></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Name</th>
+                            <th style="width: 15%;">Email</th>
+                            <th style="width: 10%;">Contact Number</th>
+                            <th style="width: 10%;">Company Name</th>
+                            <th style="width: 10%;">Job Title</th>
+                            <th style="width: 5%;">Gender</th>
+                            <th style="width: 10%;">Date of Birth</th>
+                            <th style="width: 10%;">Nationality</th>
+                            <th style="width: 10%;">Customer Type</th>
+                            <th style="width: 10%;">Preferred Contact Method</th>
+                            <th style="width: 10%;">Newsletter Subscription</th>
+                            <th style="width: 10%;">Account Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                @endif
                 <tr>
                     <td>{{ $customer->name }}</td>
                     <td>{{ $customer->email }}</td>

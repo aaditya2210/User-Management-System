@@ -129,8 +129,32 @@
     </div>
 </div>
 
-{{-- JavaScript for Delete Confirmation and AJAX --}}
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this user?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    let deleteUserId = null;
+
     document.addEventListener("DOMContentLoaded", function () {
         
         // Initial Load Users
@@ -232,7 +256,7 @@
             // Add event listeners to delete buttons
             document.querySelectorAll(".delete-user").forEach(button => {
                 button.addEventListener("click", function() {
-                    deleteUser(this.getAttribute("data-id"));
+                    showDeleteConfirmation(this.getAttribute("data-id"));
                 });
             });
         }
@@ -292,93 +316,80 @@
             });
         }
 
+        // Show delete confirmation modal
+        function showDeleteConfirmation(id) {
+            deleteUserId = id;
+            $('#deleteConfirmationModal').modal('show');
+        }
+
         // Handle user deletion
-        // function deleteUser(userId) {
-        //     if (!confirm("Are you sure you want to delete this user?")) return;
-
-        //     $.ajax({
-        //         url: `/api/users/${userId}`,
-        //         type: "DELETE",
-        //         headers: {
-        //             Authorization: "Bearer " + localStorage.getItem("access_token")
-        //         },
-        //         success: function() {
-        //             alert("User deleted successfully.");
-        //             loadUsers(1, document.getElementById("searchInput").value);
-        //         },
-        //         error: function(xhr) {
-        //             alert("Error deleting user: " + xhr.responseText);
-        //             console.error("Error deleting user:", xhr.responseText);
-        //         }
-        //     });
-        // }
-
-
+        $('#confirmDeleteButton').click(function() {
+            if (deleteUserId) {
+                deleteUser(deleteUserId);
+            }
+        });
 
         function deleteUser(userId) {
-    if (!confirm("Are you sure you want to delete this user?")) return;
+            $.ajax({
+                url: `/api/users/${userId}`,
+                type: "DELETE",
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("access_token")
+                },
+                success: function() {
+                    $('#deleteConfirmationModal').modal('hide');
+                    showSuccessNotification("User deleted successfully!");
 
-    $.ajax({
-        url: `/api/users/${userId}`,
-        type: "DELETE",
-        headers: {
-            Authorization: "Bearer " + localStorage.getItem("access_token")
-        },
-        success: function() {
-            showSuccessNotification("User deleted successfully!");
-
-            // Wait 1 second before reloading the current page of users
-            setTimeout(() => {
-                let currentPage = document.querySelector(".pagination .active a")?.textContent || 1;
-                loadUsers(currentPage, document.getElementById("searchInput").value);
-            }, 1000);
-        },
-        error: function(xhr) {
-            showErrorNotification("Error deleting user: " + xhr.responseText);
-            console.error("Error deleting user:", xhr.responseText);
+                    // Wait 1 second before reloading the current page of users
+                    setTimeout(() => {
+                        let currentPage = document.querySelector(".pagination .active a")?.textContent || 1;
+                        loadUsers(currentPage, document.getElementById("searchInput").value);
+                    }, 1000);
+                },
+                error: function(xhr) {
+                    $('#deleteConfirmationModal').modal('hide');
+                    showErrorNotification("Error deleting user: " + xhr.responseText);
+                    console.error("Error deleting user:", xhr.responseText);
+                }
+            });
         }
-    });
-}
 
+        // Function to show a success notification
+        function showSuccessNotification(message) {
+            const alertContainer = document.createElement("div");
+            alertContainer.className = "alert alert-success alert-dismissible fade show";
+            alertContainer.role = "alert";
+            alertContainer.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
 
-// Function to show a success notification
-function showSuccessNotification(message) {
-    const alertContainer = document.createElement("div");
-    alertContainer.className = "alert alert-success alert-dismissible fade show";
-    alertContainer.role = "alert";
-    alertContainer.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    `;
+            document.body.prepend(alertContainer); // Append the alert to the top of the page
 
-    document.body.prepend(alertContainer); // Append the alert to the top of the page
+            // Auto-dismiss the alert after 3 seconds
+            setTimeout(() => {
+                alertContainer.classList.remove("show");
+                setTimeout(() => alertContainer.remove(), 500);
+            }, 3000);
+        }
 
-    // Auto-dismiss the alert after 3 seconds
-    setTimeout(() => {
-        alertContainer.classList.remove("show");
-        setTimeout(() => alertContainer.remove(), 500);
-    }, 3000);
-}
+        // Function to show an error notification
+        function showErrorNotification(message) {
+            const alertContainer = document.createElement("div");
+            alertContainer.className = "alert alert-danger alert-dismissible fade show";
+            alertContainer.role = "alert";
+            alertContainer.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
 
-// Function to show an error notification
-function showErrorNotification(message) {
-    const alertContainer = document.createElement("div");
-    alertContainer.className = "alert alert-danger alert-dismissible fade show";
-    alertContainer.role = "alert";
-    alertContainer.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    `;
+            document.body.prepend(alertContainer);
 
-    document.body.prepend(alertContainer);
-
-    setTimeout(() => {
-        alertContainer.classList.remove("show");
-        setTimeout(() => alertContainer.remove(), 500);
-    }, 3000);
-}
-
-
+            setTimeout(() => {
+                alertContainer.classList.remove("show");
+                setTimeout(() => alertContainer.remove(), 500);
+            }, 3000);
+        }
 
         // Search functionality
         document.getElementById("searchInput").addEventListener("keyup", function() {

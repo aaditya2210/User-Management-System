@@ -274,15 +274,15 @@
             contentType: false,
             processData: false,
             success: function(response) {
-    $('#formErrors').html('<div class="alert alert-success">User updated successfully!</div>');
+    $('#formErrors').html('<div class="alert alert-success">User created successfully!</div>');
 
     // Show a Toastr success notification
-    toastr.success("User updated successfully!", "Success");
+    toastr.success("User created successfully!", "Success");
 
     // Redirect after 2 seconds
     setTimeout(function() {
         window.location.href = "{{ route('users.index') }}";
-    }, 2000);
+    }, 1000);
 },
 
             error: function(xhr) {

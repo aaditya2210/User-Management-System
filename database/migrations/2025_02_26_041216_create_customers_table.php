@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id()->comment('Primary Key: Unique customer ID');
             $table->string('name', 100)->comment('Full name of the customer');
             $table->string('email', 150)->unique()->comment('Unique email address of the customer');
-            $table->string('contact_number', 15)->comment('Customer contact number');
+            $table->string('contact_number', 25)->comment('Customer contact number');
             $table->string('address', 255)->comment('Customer address');
             $table->timestamps();
         });

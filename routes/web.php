@@ -33,11 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/export/pdf', [UserController::class, 'exportPdf'])->name('users.export.pdf');
     Route::get('/api/users', [UserController::class, 'getUsers'])->name('api.users');
 
-    // City & State routes (now require authentication)
-    Route::get('cities/{state_id}', [CityController::class, 'getCities']);
-    Route::get('states', [StateController::class, 'index']);
-    Route::get('/get-cities', [UserController::class, 'getCities'])->name('get.cities');
-
+    
     // Role Management
     Route::resource('roles', RoleController::class);
     Route::post('/users/{user}/assign-role', [RoleController::class, 'assignRole'])->name('users.assignRole');
@@ -65,4 +61,9 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['can:manage-customers'])->group(function () {
     Route::resource('customers', CustomerController::class);
 });
+Route::get('states', [StateController::class, 'index']);
+Route::get('/get-cities', [UserController::class, 'getCities'])->name('get.cities');
 });
+
+    // City & State routes (now require authentication)
+    Route::get('cities/{state_id}', [CityController::class, 'getCities']);

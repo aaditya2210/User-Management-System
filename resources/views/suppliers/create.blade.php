@@ -120,7 +120,7 @@
                         required: true,
                         digits: true,
                         minlength: 10,
-                        maxlength: 15
+                        maxlength: 10
                     },
                     address: {
                         required: true
@@ -167,16 +167,78 @@
                         date: true
                     }
                 },
+              
+                
+
                 messages: {
-                    name: "Please enter at least 3 characters",
-                    email: "Enter a valid email",
-                    contact_number: "Enter a valid contact number (10-15 digits)",
-                    gst_number: "Enter a valid GST Number (15 characters)",
-                    website: "Enter a valid URL",
-                    postal_code: "Enter a valid postal code (5-6 digits)",
-                    contract_start_date: "Select a start date",
-                    contract_end_date: "Select an end date"
+                    name: {
+                        required: "Please enter the name",
+                        minlength: "Name must be at least 3 characters long"
+                    },
+                    email: {
+                        required: "Please enter the email",
+                        email: "Please enter a valid email address"
+                    },
+                    contact_number: {
+                        required: "Please enter the contact number",
+                        digits: "Please enter only 10 digits",
+                        minlength: "Must be 10 digits.", maxlength: "Must be 10 digits."
+                    },
+                    address: {
+                        required: "Please enter the address",
+                        minlength: "Address must be at least 5 characters long"
+                    },
+                    company_name: {
+                        required: "Please enter the company name",
+                        minlength: "Company name must be at least 2 characters long"
+                    },
+                    gst_number: {
+                        required: "Please enter the gst number ",
+                        minlength: "Enter a valid GST Number (15 characters)",
+                        maxlength: "Enter a valid GST Number (15 characters)"
+                    },
+                    website: {
+                        required:  "Enter a valid URL"
+                    },
+                    country: {
+                        required: "Please enter country"
+                    },
+                    state: {
+                        required: "Please enter state"
+                    },
+                    city: {
+                        required: "Please enter city"
+                    },
+                    postal_code: {
+                        required: "Please enter postal code",
+                        digits: "Please enter only digits",
+                        minlength: "Please enter a 6 digits only",
+                        maxlength: "Please enter a 6 digits only",
+                    },
+                    contact_person: {
+                        required: "Please enter contact person name"
+                    },
+                    status: {
+                        required: "Please select the status"
+                    },
+                    contract_start_date: {
+                        required: "Select a start date"
+                    },
+                    contract_end_date: {
+                         required: "Select a end date"
+                    },
+                    newsletter_subscription: {
+                        required: "Please select the newsletter subscription status"
+                    },
+                    account_balance: {
+                        required: "Please enter the account balance",
+                        number: "Please enter a valid number",
+                        min: "Account balance cannot be negative"
+                    }
                 },
+
+
+
                 errorPlacement: function(error, element) {
                     error.insertAfter(element);
                 },
@@ -201,15 +263,15 @@
                         },
                         success: function(response) {
                             $('#formErrors').html(
-                                '<div class="alert alert-success">User created successfully!</div>'
+                                '<div class="alert alert-success">Supplier created successfully!</div>'
                                 );
 
                             // Show a Toastr success notification
-                            toastr.success("User created successfully!", "Success");
+                            toastr.success("Supplier created successfully!", "Success");
 
                             // Redirect after 2 seconds
                             setTimeout(function() {
-                                window.location.href = "{{ route('users.index') }}";
+                                window.location.href = "{{ route('suppliers.index') }}";
                             }, 1000);
                         },
 

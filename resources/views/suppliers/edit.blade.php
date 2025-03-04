@@ -91,9 +91,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
-    	
-			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#editSupplierForm').validate({
@@ -110,7 +109,124 @@
                         required: true,
                         digits: true
                     },
-                    // Add more validation rules as needed
+                    address: {
+                        required: true,
+                        minlength: 5
+                    },
+                    company_name: {
+                        required: true,
+                        minlength: 2
+                    },
+                    gst_number: {
+                        required: true,
+                        minlength: 2
+                    },
+                    website: {
+                        required: true,
+                        url: true
+                    },
+                    country: {
+                        required: true,
+                        minlength: 2
+                    },
+                    state: {
+                        required: true,
+                        minlength: 2
+                    },
+                    city: {
+                        required: true,
+                        minlength: 2
+                    },
+                    postal_code: {
+                        required: true,
+                        digits: true
+                    },
+                    contact_person: {
+                        required: true,
+                        minlength: 2
+                    },
+                    status: {
+                        required: true
+                    },
+                    contract_start_date: {
+                        required: true,
+                        date: true
+                    },
+                    contract_end_date: {
+                        required: true,
+                        date: true
+                    }
+                },
+                messages: {
+                    name: {
+                        required: "Please enter the name",
+                        minlength: "Name must be at least 3 characters long"
+                    },
+                    email: {
+                        required: "Please enter the email",
+                        email: "Please enter a valid email address"
+                    },
+                    contact_number: {
+                        required: "Please enter the contact number",
+                        digits: "Please enter only digits"
+                    },
+                    address: {
+                        required: "Please enter the address",
+                        minlength: "Address must be at least 5 characters long"
+                    },
+                    company_name: {
+                        required: "Please enter the company name",
+                        minlength: "Company name must be at least 2 characters long"
+                    },
+                    gst_number: {
+                        required: "Please enter the GST number",
+                        minlength: "GST number must be at least 2 characters long"
+                    },
+                    website: {
+                        required: "Please enter the website",
+                        url: "Please enter a valid URL"
+                    },
+                    country: {
+                        required: "Please enter the country",
+                        minlength: "Country must be at least 2 characters long"
+                    },
+                    state: {
+                        required: "Please enter the state",
+                        minlength: "State must be at least 2 characters long"
+                    },
+                    city: {
+                        required: "Please enter the city",
+                        minlength: "City must be at least 2 characters long"
+                    },
+                    postal_code: {
+                        required: "Please enter the postal code",
+                        digits: "Please enter only digits"
+                    },
+                    contact_person: {
+                        required: "Please enter the contact person",
+                        minlength: "Contact person must be at least 2 characters long"
+                    },
+                    status: {
+                        required: "Please select the status"
+                    },
+                    contract_start_date: {
+                        required: "Please enter the contract start date",
+                        date: "Please enter a valid date"
+                    },
+                    contract_end_date: {
+                        required: "Please enter the contract end date",
+                        date: "Please enter a valid date"
+                    }
+                },
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid').removeClass('is-valid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid').addClass('is-valid');
                 },
                 submitHandler: function(form) {
                     $.ajax({
@@ -118,33 +234,14 @@
                         method: 'POST',
                         data: $(form).serialize(),
                         success: function(response) {
-    $('#formErrors').html('<div class="alert alert-success">Supplier updated successfully!</div>');
-
-    // Show a Toastr success notification
-    toastr.success("Supplier updated successfully!", "Success");
-
-    // Redirect after 2 seconds
-    setTimeout(function() {
-        window.location.href = "{{ route('suppliers.index') }}";
-    }, 2000);
-},
-
-            error: function(xhr) {
-                $('#submitBtn').prop('disabled', false).text('Submit');
-
-                if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    var errors = xhr.responseJSON.errors;
-                    var errorHtml = '<div class="alert alert-danger"><ul>';
-                    $.each(errors, function(key, value) {
-                        errorHtml += '<li>' + value + '</li>';
-                        toastr.error(value, "Error"); // Show Toastr error for each validation error
-                    });
-                    errorHtml += '</ul></div>';
-                    $('#formErrors').html(errorHtml);
-                } else {
-                    toastr.error("An unexpected error occurred. Please try again.", "Error");
-                }
-            }
+                            toastr.success('Supplier updated successfully!');
+                            setTimeout(function() {
+                                window.location.href = "{{ route('suppliers.index') }}";
+                            }, 2000);
+                        },
+                        error: function(xhr) {
+                            toastr.error('An error occurred while updating the supplier.');
+                        }
                     });
                 }
             });

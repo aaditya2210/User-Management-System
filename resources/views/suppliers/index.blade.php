@@ -44,9 +44,34 @@
         <div id="paginationLinks" class="mt-3"></div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this supplier?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let deleteSupplierId = null;
+
         function fetchSuppliers(page = 1) {
             let token = localStorage.getItem("access_token"); // Retrieve token from local storage
 
@@ -86,7 +111,7 @@
                                     <td>
                                         @can('manage-suppliers')
                                             <a href="/suppliers/${supplier.id}/edit" class="btn btn-warning btn-sm">Edit</a>
-                                            <button class="btn btn-danger btn-sm" onclick="deleteSupplier(${supplier.id})">Delete</button>
+                                            <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmation(${supplier.id})">Delete</button>
                                         @endcan
                                     </td>
                                 </tr>
@@ -116,9 +141,18 @@
             });
         }
 
-        function deleteSupplier(id) {
-            if (!confirm('Are you sure you want to delete this supplier?')) return;
+        function showDeleteConfirmation(id) {
+            deleteSupplierId = id;
+            $('#deleteConfirmationModal').modal('show');
+        }
 
+        $('#confirmDeleteButton').click(function() {
+            if (deleteSupplierId) {
+                deleteSupplier(deleteSupplierId);
+            }
+        });
+
+        function deleteSupplier(id) {
             $.ajax({
                 url: `/api/suppliers/${id}`,
                 method: 'POST', // Change from DELETE to POST
@@ -131,103 +165,16 @@
                     'Accept': 'application/json'
                 },
                 success: function(response) {
-                    $('#formErrors').html('<div class="alert alert-success">Supplier deleted successfully!</div>');
-
-                    // Show a Toastr success notification
+                    $('#deleteConfirmationModal').modal('hide');
                     toastr.success("Supplier deleted successfully!", "Success");
-
-                    // Redirect after 2 seconds
-                    setTimeout(function() {
-                        window.location.href = "{{ route('suppliers.index') }}";
-                    }, 2000);
-                },
-
-                error: function(xhr) {
-                    $('#submitBtn').prop('disabled', false).text('Submit');
-
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        var errors = xhr.responseJSON.errors;
-                        var errorHtml = '<div class="alert alert-danger"><ul>';
-                        $.each(errors, function(key, value) {
-                            errorHtml += '<li>' + value + '</li>';
-                            toastr.error(value, "Error"); // Show Toastr error for each validation error
-                        });
-                        errorHtml += '</ul></div>';
-                        $('#formErrors').html(errorHtml);
-                    } else {
-                        toastr.error("An unexpected error occurred. Please try again.", "Error");
-                    }
-                }
-            });
-        }
-        // ✅ Open Edit Supplier Modal (Prefill Data)
-        function editSupplier(id) {
-            let token = localStorage.getItem("access_token");
-
-            $.ajax({
-                url: `/api/suppliers/${id}`,
-                method: "GET",
-                headers: {
-                    Authorization: "Bearer " + token
-                },
-                success: function(supplier) {
-                    $("#editSupplierModal").modal("show"); // Show modal
-
-                    // Prefill form fields
-                    $("#editSupplierId").val(supplier.id);
-                    $("#editName").val(supplier.name);
-                    $("#editEmail").val(supplier.email);
-                    $("#editContactNumber").val(supplier.contact_number);
-                    $("#editAddress").val(supplier.address);
-                    $("#editCompanyName").val(supplier.company_name);
-                    $("#editGstNumber").val(supplier.gst_number);
-                    $("#editWebsite").val(supplier.website);
-                    $("#editCountry").val(supplier.country);
-                    $("#editState").val(supplier.state);
-                    $("#editCity").val(supplier.city);
-                    $("#editPostalCode").val(supplier.postal_code);
-                    $("#editContactPerson").val(supplier.contact_person);
-                    $("#editStatus").val(supplier.status);
-                    $("#editContractStartDate").val(supplier.contract_start_date);
-                    $("#editContractEndDate").val(supplier.contract_end_date);
-                },
-                error: function(xhr) {
-                    console.error(xhr.responseText);
-                    alert("Error fetching supplier details.");
-                }
-            });
-        }
-
-        function updateSupplier() {
-            let token = localStorage.getItem("access_token");
-            let supplierId = $("#editSupplierId").val();
-            let formData = $("#editSupplierForm").serialize() + "&_method=PUT";
-
-            console.log("Updating Supplier ID:", supplierId); // Debugging log
-            console.log("Form Data:", formData); // Debugging log
-
-            $.ajax({
-                url: `/api/suppliers/${supplierId}`,
-                method: "POST", // Laravel understands this as PUT because of _method=PUT
-                data: formData,
-                headers: {
-                    'Authorization': "Bearer " + token,
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                    'Accept': 'application/json'
-                },
-                success: function(response) {
-                    console.log("Update Success:", response);
-                    alert("Supplier updated successfully!");
-                    $("#editSupplierModal").modal("hide");
                     fetchSuppliers(); // Refresh the list
                 },
                 error: function(xhr) {
-                    console.error("Update Error:", xhr.responseText);
-                    alert("Failed to update supplier. Check console logs.");
+                    $('#deleteConfirmationModal').modal('hide');
+                    toastr.error("An error occurred while deleting the supplier.", "Error");
                 }
             });
         }
-
 
         $(document).ready(function() {
             fetchSuppliers();
