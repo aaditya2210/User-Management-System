@@ -9,12 +9,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 // use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens,HasFactory, Notifiable;
+    use HasRoles,HasApiTokens,HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -68,27 +72,30 @@ class User extends Authenticatable
 
 
 
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class);
-    }
+//     public function roles(): BelongsToMany
+//     {
+//         return $this->belongsToMany(Role::class);
+//     }
 
    
 
-    public function hasRole($role)
-{
-    return $this->roles->contains('name', $role);
-}
+// //     public function hasRole($role)
+// // {
+// //     return $this->roles->contains('name', $role);
+// // }
 
+// public function hasRole($role)
+// {
+//     return $this->role === $role;
+// }
 
+//     public function assignRole($role)
+//     {
+//         $this->roles()->attach($role);
+//     }
 
-    public function assignRole($role)
-    {
-        $this->roles()->attach($role);
-    }
-
-    public function removeRole($role)
-    {
-        $this->roles()->detach($role);
-    }
+//     public function removeRole($role)
+//     {
+//         $this->roles()->detach($role);
+//     }
 }

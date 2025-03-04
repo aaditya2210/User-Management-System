@@ -4,11 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Role;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
+
+use Illuminate\Routing\Controller;
 
 class UserRoleController extends Controller
 {
+    // public function __construct()
+    // {
+    //     $this->middleware('role:admin'); // Restrict access to admins only
+    // }
+
     public function index()
     {
         try {
@@ -21,25 +28,36 @@ class UserRoleController extends Controller
         }
     }
 
-    public function attachRole(Request $request, User $user)
+    public function assignRole(Request $request, User $user)
     {
         try {
-            $user->roles()->attach($request->role_id);
+            $role = Role::findByName($request->role);
+            if (!$role) {
+                return back()->withErrors(['error' => 'Role not found.']);
+            }
+            $user->assignRole($role);
             return redirect()->back()->with('success', 'Role assigned successfully.');
         } catch (\Exception $e) {
-            Log::error("❌ Error attaching role to user (User ID: {$user->id}): " . $e->getMessage());
+            Log::error("❌ Error assigning role: " . $e->getMessage());
             return back()->withErrors(['error' => 'Failed to assign role.']);
         }
     }
 
-    public function detachRole(User $user, Role $role)
+    public function removeRole(Request $request, User $user)
     {
         try {
-            $user->roles()->detach($role->id);
+            $role = Role::findByName($request->role);
+            if (!$role) {
+                return back()->withErrors(['error' => 'Role not found.']);
+            }
+    
+            // Correct method for removing a role
+            $user->removeRole($role->name);
+    
             return redirect()->back()->with('success', 'Role removed successfully.');
         } catch (\Exception $e) {
-            Log::error("❌ Error detaching role from user (User ID: {$user->id}, Role ID: {$role->id}): " . $e->getMessage());
+            Log::error("❌ Error removing role: " . $e->getMessage());
             return back()->withErrors(['error' => 'Failed to remove role.']);
         }
     }
-}
+    }
