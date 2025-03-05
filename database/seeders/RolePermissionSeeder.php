@@ -18,8 +18,8 @@ class RolePermissionSeeder extends Seeder
         // Define permissions
         $permissions = [
             'manage users',
-            'manage customers',
-            'manage suppliers'
+            'manage-customers',
+            'manage-suppliers'
         ];
 
         foreach ($permissions as $permission) {
@@ -28,7 +28,7 @@ class RolePermissionSeeder extends Seeder
 
         // Assign permissions to roles
         $admin->givePermissionTo($permissions);
-        $customerManager->givePermissionTo('manage customers');
-        $supplierManager->givePermissionTo('manage suppliers');
+        $customerManager->givePermissionTo('manage-customers');
+        $supplierManager->givePermissionTo('manage-suppliers');
     }
 }

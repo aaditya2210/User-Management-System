@@ -11,11 +11,20 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\UserRoleController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\RoleMiddleware;
 
 // Public routes (accessible without authentication)
 Route::get('/', function () {
     return view('welcome');
 });
+
+// City & State routes
+// Route::get('cities/{state_id}', [CityController::class, 'getCities']);
+Route::get('cities/{state_id}', [CityController::class, 'getCities'])->middleware('allow.registration');
+Route::get('states', [StateController::class, 'index'])->middleware('allow.registration');
+Route::get('/get-cities', [UserController::class, 'getCities'])->name('get.cities')->middleware('allow.registration');
+
 
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -34,26 +43,26 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/export/pdf', [UserController::class, 'exportPdf'])->name('users.export.pdf');
     Route::get('/api/users', [UserController::class, 'getUsers'])->name('api.users');
 
-    
-    // Role Management
-    Route::resource('roles', RoleController::class);
-    // Route::post('/users/{user}/assign-role', [RoleController::class, 'assignRole'])->name('users.assignRole');
-    // Route::delete('/users/{user}/roles/{role}', [RoleController::class, 'removeRole'])->name('users.removeRole');
-    // Route::get('/roles/manage/{id}', [RoleController::class, 'manageRoles'])->name('roles.manage');
-    // Route::post('/roles/assign/{id}', [RoleController::class, 'assignRole'])->name('roles.assign');
-    // Route::post('/roles/remove/{id}', [RoleController::class, 'removeRole'])->name('roles.remove');
 
-    // User Role Management
-    Route::get('/user-roles', [UserRoleController::class, 'index'])->name('user.roles');
-    Route::post('/user-roles/{user}/assign', [UserRoleController::class, 'assignRole'])->name('user.assignRole');
-    Route::delete('/user-roles/{user}/remove', [UserRoleController::class, 'removeRole'])->name('user.removeRole');
-    // Route::get('user-roles', [UserRoleController::class, 'index'])->name('user.roles.index');
-    // Route::post('user-roles/{user}/attach', [UserRoleController::class, 'attachRole'])->name('user.roles.attach');
-    // Route::delete('user-roles/{user}/{role}', [UserRoleController::class, 'detachRole'])->name('user.roles.detach');
+    // Role Management    
+    Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::resource('roles', RoleController::class);
+        Route::get('/user-roles', [UserRoleController::class, 'index'])->name('user.roles');
+        Route::post('/user-roles/{user}/assign', [UserRoleController::class, 'assignRole'])->name('user.assignRole');
+        Route::delete('/user-roles/{user}/remove', [UserRoleController::class, 'removeRole'])->name('user.removeRole');
+
+        Route::post('/roles/{role}/assign-permission', [UserRoleController::class, 'assignPermission'])->name('role.assignPermission');
+        Route::delete('/roles/{role}/remove-permission', [UserRoleController::class, 'removePermission'])->name('role.removePermission');
+    });
+
+
+
+
+
 
     // Supplier Management (restricted with 'manage-suppliers' permission)
     Route::middleware(['can:manage-suppliers'])->group(function () {
-        Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+        Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index')->middleware(['auth', 'permission:manage-suppliers']);
         Route::get('/suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
         Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
         Route::get('/suppliers/{supplier}/edit', [SupplierController::class, 'edit'])->name('suppliers.edit');
@@ -63,21 +72,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Customer Management
     Route::middleware(['can:manage-customers'])->group(function () {
-    Route::resource('customers', CustomerController::class);
+        Route::resource('customers', CustomerController::class);
+    });
 });
-Route::get('states', [StateController::class, 'index']);
-Route::get('/get-cities', [UserController::class, 'getCities'])->name('get.cities');
-
-
-});
-
-    // City & State routes (now require authentication)
-    Route::get('cities/{state_id}', [CityController::class, 'getCities']);
-
-
-
-    // use App\Http\Controllers\UserRoleController;
-
-    // Route::middleware(['auth', 'role:admin'])->group(function () {
-    // });
-    

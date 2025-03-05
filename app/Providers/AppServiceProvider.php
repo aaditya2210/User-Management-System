@@ -36,19 +36,19 @@ class AppServiceProvider extends ServiceProvider
    
     
 
-        Gate::define('manage-users', function (User $user) {
-            return $user->roles()->where('name', 'admin')->exists();
-        });
+        // Gate::define('manage-users', function (User $user) {
+        //     return $user->roles()->where('name', 'admin')->exists();
+        // });
 
         
-        Gate::define('manage-customers', function (User $user) {
-            return $user->roles()->where('name', 'admin')->exists() || 
-                   $user->roles()->where('name', 'customer_manager')->exists();
-        });
+        // Gate::define('manage-customers', function (User $user) {
+        //     return $user->roles()->where('name', 'admin')->exists() || 
+        //            $user->roles()->where('name', 'customer_manager')->exists();
+        // });
     
-        Gate::define('manage-suppliers', function (User $user) {
-            return $user->roles()->where('name', 'admin')->exists() || 
-                   $user->roles()->where('name', 'supplier_manager')->exists();
-        });
+        // Gate::define('manage-suppliers', function (User $user) {
+        //     return $user->roles()->where('name', 'admin')->exists() || 
+        //            $user->roles()->where('name', 'supplier_manager')->exists();
+        // });
     }
 }

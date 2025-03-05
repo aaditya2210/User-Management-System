@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id()->comment('Primary Key: Unique customer ID');
-            $table->string('name', 100)->comment('Full name of the customer');
-            $table->string('email', 150)->unique()->comment('Unique email address of the customer');
-            $table->string('contact_number', 25)->comment('Customer contact number');
-            $table->string('address', 255)->comment('Customer address');
+            $table->string('name', 80)->comment('Full name of the customer'); // Reduced to 80 as names rarely exceed this length
+            $table->string('email', 100)->unique()->comment('Unique email address of the customer'); // 100 is sufficient for most emails
+            $table->string('contact_number', 15)->comment('Customer contact number'); // 15 supports international formats
+            $table->string('address', 200)->comment('Customer address'); // Slightly reduced to 200, still sufficient
             $table->timestamps();
         });
     }

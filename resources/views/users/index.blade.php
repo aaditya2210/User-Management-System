@@ -4,238 +4,260 @@
 
 @section('content')
 
-<div class="container mt-4">
-    @php
-        $loggedInUser = Auth::user();
-        $userRoles = $loggedInUser->roles->pluck('name')->implode(', '); // Get all roles as a comma-separated string
-    @endphp
+    <div class="container mt-4">
+        @php
+            $loggedInUser = Auth::user();
+            $userRoles = $loggedInUser->roles->pluck('name')->implode(', '); // Get all roles as a comma-separated string
+        @endphp
 
-    <div class="alert alert-info">
-        <strong>Logged in as:</strong> {{ $loggedInUser->first_name }} {{ $loggedInUser->last_name }}
-        <span class="badge bg-secondary">({{ $userRoles ?: 'User' }})</span>
-    </div>
-
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Users List</h4>
-            <div>
-                <a href="{{ route('suppliers.index') }}" class="btn btn-primary me-2">
-                    <i class="bi bi-box-seam"></i> Suppliers
-                </a>
-                <a href="{{ route('customers.index') }}" class="btn btn-info">
-                    <i class="bi bi-people"></i> Customers
-                </a>
-            </div>
-            <div>
-                <input type="text" id="searchInput" class="form-control" placeholder="Search users...">
-            </div>
+        <div class="alert alert-info">
+            <strong>Logged in as:</strong> {{ $loggedInUser->first_name }} {{ $loggedInUser->last_name }}
+            <span class="badge bg-secondary">({{ $userRoles ?: 'User' }})</span>
         </div>
-        
-        <div class="card-body">
-            {{-- Flash Messages --}}
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
 
-            @if(session('error') || $errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') ?? $errors->first() }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            
-            <div class="d-flex justify-content-between mb-3">
-                {{-- Add User Button --}}
-                @can('manage-users')
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Users List</h4>
                 <div>
-                    <a href="{{ route('users.create') }}" class="btn btn-success">
-                        <i class="bi bi-person-plus"></i> Add User
+                    <a href="{{ route('suppliers.index') }}" class="btn btn-primary me-2">
+                        <i class="bi bi-box-seam"></i> Suppliers
+                    </a>
+                    <a href="{{ route('customers.index') }}" class="btn btn-info">
+                        <i class="bi bi-people"></i> Customers
                     </a>
                 </div>
-                @endcan
-
-                {{-- Manage User Roles Button --}}
                 <div>
-                    @can('manage-users')
-                    <a href="{{ url('/user-roles') }}" class="btn btn-warning">
-                        <i class="bi bi-shield-lock"></i> Manage User Roles
-                    </a>
-                    @endcan
+                    {{-- <input type="text" id="searchInput" class="form-control" placeholder="Search users..."> --}}
+                    {{-- <input id="searchInput"> --}}
+                    <div id="searchInput"></div>
                 </div>
+            </div>
 
-                <div>
-                @can('manage-users')
-                    <a href="{{ route('roles.index') }}" class="btn btn-warning">
-                        <i class="bi bi-shield-lock"></i>Define Roles
-                    </a>
-                    @endcan
-                </div>
+            <div class="card-body">
+                {{-- Flash Messages --}}
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                @if (session('error') || $errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') ?? $errors->first() }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                <div class="d-flex justify-content-between mb-3">
+                    {{-- Add User Button --}}
+                    @role('admin')
+                    <div>
+                        <a href="{{ route('users.create') }}" class="btn btn-success">
+                            <i class="bi bi-person-plus"></i> Add User
+                        </a>
+                    </div>
+                @elsecan('manage-users')
+                    <div>
+                        <a href="{{ route('users.create') }}" class="btn btn-success">
+                            <i class="bi bi-person-plus"></i> Add User
+                        </a>
+                    </div>
+                @endrole
                 
-                {{-- Export Buttons --}}
-                <div class="btn-group" role="group">
-                    <button id="exportDropdown" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-download"></i> Export
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="exportDropdown">
-                        <li><a class="dropdown-item" href="{{ route('users.export.csv') }}" id="exportCsv">
-                            <i class="bi bi-filetype-csv"></i> CSV
-                        </a></li>
-                        <li><a class="dropdown-item" href="{{ route('users.export.excel') }}" id="exportExcel">
-                            <i class="bi bi-file-earmark-excel"></i> Excel
-                        </a></li>
-                        <li><a class="dropdown-item" href="{{ route('users.export.pdf') }}" id="exportPdf">
-                            <i class="bi bi-file-earmark-pdf"></i> PDF
-                        </a></li>
-                    </ul>
+
+                    {{-- Manage User Roles Button --}}
+                    <div>
+                        {{-- @can('manage-users') --}}
+                        <a href="{{ url('/user-roles') }}" class="btn btn-warning">
+                            <i class="bi bi-shield-lock"></i> Manage User Roles
+                        </a>
+                        {{-- @endcan --}}
+                    </div>
+
+                    <div>
+                        {{-- @can('manage-users') --}}
+                        <a href="{{ route('roles.index') }}" class="btn btn-warning">
+                            <i class="bi bi-shield-lock"></i>Define Roles
+                        </a>
+                        {{-- @endcan --}}
+                    </div>
+
+                    {{-- Export Buttons --}}
+                    <div class="btn-group" role="group">
+                        <button id="exportDropdown" type="button" class="btn btn-primary dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-download"></i> Export
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                            <li><a class="dropdown-item" href="{{ route('users.export.csv') }}" id="exportCsv">
+                                    <i class="bi bi-filetype-csv"></i> CSV
+                                </a></li>
+                            <li><a class="dropdown-item" href="{{ route('users.export.excel') }}" id="exportExcel">
+                                    <i class="bi bi-file-earmark-excel"></i> Excel
+                                </a></li>
+                            <li><a class="dropdown-item" href="{{ route('users.export.pdf') }}" id="exportPdf">
+                                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                                </a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                {{-- Users Table --}}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Contact Number</th>
+                                <th>Postcode</th>
+                                <th>Gender</th>
+                                <th>State</th>
+                                <th>City</th>
+                                <th>Roles</th>
+                                <th>Hobbies</th>
+                                <th>Uploaded Files</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            {{-- Users will be loaded dynamically via AJAX --}}
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Pagination --}}
+                <div id="pagination" class="d-flex justify-content-center mt-4">
+                    <nav>
+                        <ul class="pagination"></ul>
+                    </nav>
                 </div>
             </div>
+        </div>
+    </div>
 
-            {{-- Users Table --}}
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Contact Number</th>
-                            <th>Postcode</th>
-                            <th>Gender</th>
-                            <th>State</th>
-                            <th>City</th>
-                            <th>Roles</th>
-                            <th>Hobbies</th>
-                            <th>Uploaded Files</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                        {{-- Users will be loaded dynamically via AJAX --}}
-                    </tbody>
-                </table>
-            </div>
-
-            {{-- Pagination --}}
-            <div id="pagination" class="d-flex justify-content-center mt-4">
-                <nav>
-                    <ul class="pagination"></ul>
-                </nav>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog"
+        aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this user?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this user?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let deleteUserId = null;
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    let deleteUserId = null;
+        document.addEventListener("DOMContentLoaded", function() {
 
-    document.addEventListener("DOMContentLoaded", function () {
-        
-        // Initial Load Users
-        loadUsers(1);
+            // Initial Load Users
+            loadUsers(1);
 
-        // Load users dynamically via AJAX
-        function loadUsers(page = 1, search = '') {
-            $.ajax({
-                url: `/api/users?page=${page}&search=${search}`,
-                type: "GET",
-                dataType: "json",
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("access_token")
-                },
-                success: function(response) {
-                    updateUsersTable(response.data);
-                    updatePagination(response);
-                },
-                error: function(xhr) {
-                    console.error("Error loading users:", xhr.responseText);
-                }
-            });
-        }
-
-        // Update the Users Table
-        function updateUsersTable(users) {
-            const tbody = document.getElementById('usersTableBody');
-            tbody.innerHTML = '';
-
-            if (users.length === 0) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = '<td colspan="13" class="text-center">No users found.</td>';
-                tbody.appendChild(tr);
-                return;
+            // Load users dynamically via AJAX
+            function loadUsers(page = 1, search = '') {
+                $.ajax({
+                    url: `/api/users?page=${page}&search=${search}`,
+                    type: "GET",
+                    dataType: "json",
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("access_token")
+                    },
+                    success: function(response) {
+                        updateUsersTable(response.data);
+                        updatePagination(response);
+                    },
+                    error: function(xhr) {
+                        console.error("Error loading users:", xhr.responseText);
+                    }
+                });
             }
 
-            users.forEach(user => {
-                const tr = document.createElement('tr');
-                
-                // Format roles as badges
-                let rolesHtml = user.roles.map(role => 
-                    `<span class="badge bg-primary">${role.name}</span>`
-                ).join(' ');
-                
-                // Format hobbies as badges
-                let hobbiesArray = Array.isArray(user.hobbies) ? user.hobbies : 
-                                  (typeof user.hobbies === 'string' ? JSON.parse(user.hobbies) : []);
-                let hobbiesHtml = hobbiesArray.map(hobby => 
-                    `<span class="badge bg-secondary">${hobby}</span>`
-                ).join(' ');
-                
-                // Format uploaded files as links
-                let filesArray = user.uploaded_files ? 
-                               (Array.isArray(user.uploaded_files) ? user.uploaded_files : 
-                               JSON.parse(user.uploaded_files)) : [];
-                let filesHtml = filesArray.length > 0 ? 
-                              filesArray.map(file => 
-                                `<a href="/storage/${file}" target="_blank">${file.split('/').pop()}</a><br>`
-                              ).join('') : 'N/A';
+            // Update the Users Table
+            function updateUsersTable(users) {
+                const tbody = document.getElementById('usersTableBody');
+                tbody.innerHTML = '';
 
-                // Create actions buttons based on permissions
-                let actionsHtml = `
-                @can('manage-users')
-                    <a href="/users/${user.id}/edit" class="btn btn-warning btn-sm">
-                        <i class="bi bi-pencil-square"></i> Edit
-                    </a>
-                    @endcan
-                    `;
-                
-                if (user.id != localStorage.getItem("user_id")) {
-                    actionsHtml += `
-                     @can('manage-users')
-                        <button class="btn btn-danger btn-sm delete-user" data-id="${user.id}">
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
-                                            @endcan
-
-                    `;
+                if (users.length === 0) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = '<td colspan="13" class="text-center">No users found.</td>';
+                    tbody.appendChild(tr);
+                    return;
                 }
 
-                tr.innerHTML = `
+                users.forEach(user => {
+                    const tr = document.createElement('tr');
+
+                    // Format roles as badges
+                    let rolesHtml = user.roles.map(role =>
+                        `<span class="badge bg-primary">${role.name}</span>`
+                    ).join(' ');
+
+                    // Format hobbies as badges
+                    let hobbiesArray = Array.isArray(user.hobbies) ? user.hobbies :
+                        (typeof user.hobbies === 'string' ? JSON.parse(user.hobbies) : []);
+                    let hobbiesHtml = hobbiesArray.map(hobby =>
+                        `<span class="badge bg-secondary">${hobby}</span>`
+                    ).join(' ');
+
+                    // Format uploaded files as links
+                    let filesArray = user.uploaded_files ?
+                        (Array.isArray(user.uploaded_files) ? user.uploaded_files :
+                            JSON.parse(user.uploaded_files)) : [];
+                    let filesHtml = filesArray.length > 0 ?
+                        filesArray.map(file =>
+                            `<a href="/storage/${file}" target="_blank">${file.split('/').pop()}</a><br>`
+                        ).join('') : 'N/A';
+
+                    // Create actions buttons based on permissions
+                    let actionsHtml = `
+               @role('admin')
+    <a href="/users/${user.id}/edit" class="btn btn-warning btn-sm">
+        <i class="bi bi-pencil-square"></i> Edit
+    </a>
+@elsecan('manage-users')
+    <a href="/users/${user.id}/edit" class="btn btn-warning btn-sm">
+        <i class="bi bi-pencil-square"></i> Edit
+    </a>
+@endrole
+
+
+                    `;
+
+                    if (user.id != localStorage.getItem("user_id")) {
+                        actionsHtml += `
+                     @role('admin')
+    <button class="btn btn-danger btn-sm delete-user" data-id="${user.id}">
+        <i class="bi bi-trash"></i> Delete
+    </button>
+@elsecan('manage-users')
+    <button class="btn btn-danger btn-sm delete-user" data-id="${user.id}">
+        <i class="bi bi-trash"></i> Delete
+    </button>
+@endrole
+
+
+                    `;
+                    }
+
+                    tr.innerHTML = `
                     <td>${user.id}</td>
                     <td>${user.first_name}</td>
                     <td>${user.last_name}</td>
@@ -250,152 +272,155 @@
                     <td>${filesHtml}</td>
                     <td>${actionsHtml}</td>
                 `;
-                tbody.appendChild(tr);
-            });
-
-            // Add event listeners to delete buttons
-            document.querySelectorAll(".delete-user").forEach(button => {
-                button.addEventListener("click", function() {
-                    showDeleteConfirmation(this.getAttribute("data-id"));
+                    tbody.appendChild(tr);
                 });
-            });
-        }
 
-        // Helper function to capitalize first letter
-        function ucFirst(string) {
-            if (!string) return '';
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
+                // Add event listeners to delete buttons
+                document.querySelectorAll(".delete-user").forEach(button => {
+                    button.addEventListener("click", function() {
+                        showDeleteConfirmation(this.getAttribute("data-id"));
+                    });
+                });
+            }
 
-        // Update Pagination Links
-        function updatePagination(response) {
-            const paginationElement = document.querySelector('#pagination ul');
-            paginationElement.innerHTML = '';
+            // Helper function to capitalize first letter
+            function ucFirst(string) {
+                if (!string) return '';
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
 
-            if (response.total <= response.per_page) return;
+            // Update Pagination Links
+            function updatePagination(response) {
+                const paginationElement = document.querySelector('#pagination ul');
+                paginationElement.innerHTML = '';
 
-            // Previous button
-            const prevDisabled = response.current_page === 1 ? "disabled" : "";
-            const prevLi = document.createElement('li');
-            prevLi.className = `page-item ${prevDisabled}`;
-            prevLi.innerHTML = `
+                if (response.total <= response.per_page) return;
+
+                // Previous button
+                const prevDisabled = response.current_page === 1 ? "disabled" : "";
+                const prevLi = document.createElement('li');
+                prevLi.className = `page-item ${prevDisabled}`;
+                prevLi.innerHTML = `
                 <a class="page-link" href="#" data-page="${response.current_page - 1}">
                     <i class="bi bi-chevron-left"></i> Prev
                 </a>
             `;
-            paginationElement.appendChild(prevLi);
+                paginationElement.appendChild(prevLi);
 
-            // Page numbers
-            for (let i = 1; i <= response.last_page; i++) {
-                const activeClass = i === response.current_page ? "active" : "";
-                const pageLi = document.createElement('li');
-                pageLi.className = `page-item ${activeClass}`;
-                pageLi.innerHTML = `
+                // Page numbers
+                for (let i = 1; i <= response.last_page; i++) {
+                    const activeClass = i === response.current_page ? "active" : "";
+                    const pageLi = document.createElement('li');
+                    pageLi.className = `page-item ${activeClass}`;
+                    pageLi.innerHTML = `
                     <a class="page-link" href="#" data-page="${i}">${i}</a>
                 `;
-                paginationElement.appendChild(pageLi);
-            }
+                    paginationElement.appendChild(pageLi);
+                }
 
-            // Next button
-            const nextDisabled = response.current_page === response.last_page ? "disabled" : "";
-            const nextLi = document.createElement('li');
-            nextLi.className = `page-item ${nextDisabled}`;
-            nextLi.innerHTML = `
+                // Next button
+                const nextDisabled = response.current_page === response.last_page ? "disabled" : "";
+                const nextLi = document.createElement('li');
+                nextLi.className = `page-item ${nextDisabled}`;
+                nextLi.innerHTML = `
                 <a class="page-link" href="#" data-page="${response.current_page + 1}">
                     Next <i class="bi bi-chevron-right"></i>
                 </a>
             `;
-            paginationElement.appendChild(nextLi);
+                paginationElement.appendChild(nextLi);
 
-            // Add event listeners to pagination links
-            document.querySelectorAll(".page-link").forEach(link => {
-                link.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    loadUsers(this.getAttribute("data-page"), document.getElementById("searchInput").value);
+                // Add event listeners to pagination links
+                document.querySelectorAll(".page-link").forEach(link => {
+                    link.addEventListener("click", function(e) {
+                        e.preventDefault();
+                        loadUsers(this.getAttribute("data-page"), document.getElementById(
+                            "searchInput").value);
+                    });
                 });
-            });
-        }
-
-        // Show delete confirmation modal
-        function showDeleteConfirmation(id) {
-            deleteUserId = id;
-            $('#deleteConfirmationModal').modal('show');
-        }
-
-        // Handle user deletion
-        $('#confirmDeleteButton').click(function() {
-            if (deleteUserId) {
-                deleteUser(deleteUserId);
             }
-        });
 
-        function deleteUser(userId) {
-            $.ajax({
-                url: `/api/users/${userId}`,
-                type: "DELETE",
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("access_token")
-                },
-                success: function() {
-                    $('#deleteConfirmationModal').modal('hide');
-                    showSuccessNotification("User deleted successfully!");
+            // Show delete confirmation modal
+            function showDeleteConfirmation(id) {
+                deleteUserId = id;
+                $('#deleteConfirmationModal').modal('show');
+            }
 
-                    // Wait 1 second before reloading the current page of users
-                    setTimeout(() => {
-                        let currentPage = document.querySelector(".pagination .active a")?.textContent || 1;
-                        loadUsers(currentPage, document.getElementById("searchInput").value);
-                    }, 1000);
-                },
-                error: function(xhr) {
-                    $('#deleteConfirmationModal').modal('hide');
-                    showErrorNotification("Error deleting user: " + xhr.responseText);
-                    console.error("Error deleting user:", xhr.responseText);
+            // Handle user deletion
+            $('#confirmDeleteButton').click(function() {
+                if (deleteUserId) {
+                    deleteUser(deleteUserId);
                 }
             });
-        }
 
-        // Function to show a success notification
-        function showSuccessNotification(message) {
-            const alertContainer = document.createElement("div");
-            alertContainer.className = "alert alert-success alert-dismissible fade show";
-            alertContainer.role = "alert";
-            alertContainer.innerHTML = `
+            function deleteUser(userId) {
+                $.ajax({
+                    url: `/api/users/${userId}`,
+                    type: "DELETE",
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("access_token")
+                    },
+                    success: function() {
+                        $('#deleteConfirmationModal').modal('hide');
+                        showSuccessNotification("User deleted successfully!");
+
+                        // Wait 1 second before reloading the current page of users
+                        setTimeout(() => {
+                            let currentPage = document.querySelector(".pagination .active a")
+                                ?.textContent || 1;
+                            loadUsers(currentPage, document.getElementById("searchInput")
+                                .value);
+                        }, 1000);
+                    },
+                    error: function(xhr) {
+                        $('#deleteConfirmationModal').modal('hide');
+                        showErrorNotification("Error deleting user: " + xhr.responseText);
+                        console.error("Error deleting user:", xhr.responseText);
+                    }
+                });
+            }
+
+            // Function to show a success notification
+            function showSuccessNotification(message) {
+                const alertContainer = document.createElement("div");
+                alertContainer.className = "alert alert-success alert-dismissible fade show";
+                alertContainer.role = "alert";
+                alertContainer.innerHTML = `
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             `;
 
-            document.body.prepend(alertContainer); // Append the alert to the top of the page
+                document.body.prepend(alertContainer); // Append the alert to the top of the page
 
-            // Auto-dismiss the alert after 3 seconds
-            setTimeout(() => {
-                alertContainer.classList.remove("show");
-                setTimeout(() => alertContainer.remove(), 500);
-            }, 3000);
-        }
+                // Auto-dismiss the alert after 3 seconds
+                setTimeout(() => {
+                    alertContainer.classList.remove("show");
+                    setTimeout(() => alertContainer.remove(), 500);
+                }, 3000);
+            }
 
-        // Function to show an error notification
-        function showErrorNotification(message) {
-            const alertContainer = document.createElement("div");
-            alertContainer.className = "alert alert-danger alert-dismissible fade show";
-            alertContainer.role = "alert";
-            alertContainer.innerHTML = `
+            // Function to show an error notification
+            function showErrorNotification(message) {
+                const alertContainer = document.createElement("div");
+                alertContainer.className = "alert alert-danger alert-dismissible fade show";
+                alertContainer.role = "alert";
+                alertContainer.innerHTML = `
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             `;
 
-            document.body.prepend(alertContainer);
+                document.body.prepend(alertContainer);
 
-            setTimeout(() => {
-                alertContainer.classList.remove("show");
-                setTimeout(() => alertContainer.remove(), 500);
-            }, 3000);
-        }
+                setTimeout(() => {
+                    alertContainer.classList.remove("show");
+                    setTimeout(() => alertContainer.remove(), 500);
+                }, 3000);
+            }
 
-        // Search functionality
-        document.getElementById("searchInput").addEventListener("keyup", function() {
-            loadUsers(1, this.value);
+            // Search functionality
+            document.getElementById("searchInput").addEventListener("keyup", function() {
+                loadUsers(1, this.value);
+            });
         });
-    });
-</script>
+    </script>
 
 @endsection

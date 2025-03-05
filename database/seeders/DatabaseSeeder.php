@@ -11,9 +11,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             StateSeeder::class,
             CitySeeder::class,
-            RoleSeeder::class,
+            // RoleSeeder::class,
             CustomerSeeder::class,
             SupplierSeeder::class,
+            RolePermissionSeeder::class,
         ]);
         
         $this->command->info("✅ Database seeding completed successfully!");

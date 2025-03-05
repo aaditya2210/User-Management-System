@@ -23,40 +23,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller {
-    // public function index(Request $request)
-    // {
-    //     try {
-    //         $query = User::with(['city', 'state', 'roles'])->where('id', '!=', Auth::id());
-        
-    //         if ($request->has('search')) {
-    //             $search = $request->input('search');
-    //             $query->where(function ($q) use ($search) {
-    //                 $q->where('first_name', 'like', "%$search%")
-    //                   ->orWhere('last_name', 'like', "%$search%")
-    //                   ->orWhere('email', 'like', "%$search%");
-    //             });
-    //         }
-        
-    //         if ($request->ajax()) {
-    //             return response()->json([
-    //                 'data' => $query->paginate(5)->items(),
-    //                 'current_page' => $query->paginate(5)->currentPage(),
-    //                 'last_page' => $query->paginate(5)->lastPage(),
-    //                 'per_page' => $query->paginate(5)->perPage(),
-    //                 'total' => $query->paginate(5)->total(),
-    //                 // 'links' => $query->paginate(5)->links(), // Laravel pagination links
-    //             ]);
-    //         }
-        
-    //         $users = $query->paginate(5);
-    //         return view('users.index', compact('users'));
-    //     } catch (\Exception $e) {
-    //         Log::error('❌ Error Fetching Users: ' . $e->getMessage());
-    //         return back()->withErrors(['error' => 'Something went wrong!']);
-    //     }
-    // }
-
-
 
     public function index(Request $request)
 {
@@ -73,7 +39,7 @@ class UserController extends Controller {
         }
 
         if ($request->ajax()) {
-            $users = $query->paginate(5); // Single instance
+            $users = $query->paginate(3); // Single instance
 
             return response()->json([
                 'data' => $users->items(),
@@ -84,7 +50,7 @@ class UserController extends Controller {
             ]);
         }
 
-        $users = $query->paginate(5);
+        $users = $query->paginate(3);
         return view('users.index', compact('users'));
     } catch (\Exception $e) {
         Log::error('❌ Error Fetching Users: ' . $e->getMessage());
