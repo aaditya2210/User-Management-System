@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Customer;
+use Illuminate\Support\Carbon;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Customer>
@@ -29,8 +30,8 @@ class CustomerFactory extends Factory
             'preferred_contact_method' => $this->faker->randomElement(['Email', 'Phone', 'SMS', 'WhatsApp']), // Matching DB enum
             'newsletter_subscription' => $this->faker->boolean(),
             'account_balance' => $this->faker->randomFloat(2, 0, 999999.99), // Matches decimal(12,2)
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ];
     }
 }
