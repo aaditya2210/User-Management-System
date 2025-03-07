@@ -8,6 +8,7 @@ class Kernel extends HttpKernel {
         'role' => \App\Http\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'can' => \Illuminate\Auth\Middleware\Authorize::class,
         ];
         
     

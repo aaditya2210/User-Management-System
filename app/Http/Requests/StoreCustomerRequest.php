@@ -23,7 +23,7 @@ class StoreCustomerRequest extends FormRequest
             'gender' => 'nullable|in:Male,Female,Other',
             'date_of_birth' => 'nullable|date',
             'nationality' => 'nullable|string|max:100',
-            'customer_type' => 'nullable|in:Regular,VIP,Enterprise',
+            'customer_type' => 'nullable|in:Regular,VIP,Corporate,Enterprise',
             'notes' => 'nullable|string|max:1000',
             'preferred_contact_method' => 'nullable|in:Email,Phone,WhatsApp',
             'newsletter_subscription' => 'boolean',

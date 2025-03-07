@@ -10,6 +10,7 @@ use App\Exports\SuppliersExport;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StoreSupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
+use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
@@ -29,6 +30,9 @@ class SupplierController extends Controller
     public function create()
     {
         try {
+            // dd(Auth::user()->permissions);
+
+
             return view('suppliers.create');
         } catch (\Exception $e) {
             Log::error('Error loading supplier creation page: ' . $e->getMessage());
@@ -40,6 +44,8 @@ class SupplierController extends Controller
     public function store(StoreSupplierRequest $request)
 {
     try {
+        // dd(Auth::user()->hasPermissionTo('manage-suppliers'), Auth::user()->can('manage-suppliers'));
+
         Supplier::create($request->validated());
 
         return redirect()->route('suppliers.index')->with('success', 'Supplier added successfully!');

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\State;
+use Illuminate\Support\Facades\Cookie;
 // use App\Models\Role;
 use Spatie\Permission\Models\Role;
 
@@ -186,11 +187,22 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
-
+        Auth::logout(); // Log out the user
+    
+        // Invalidate and regenerate session
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect('/')->with('success', 'You have been logged out successfully.');
+    
+        // Clear authentication cookies
+        Cookie::queue(Cookie::forget('remember_web'));
+    
+        // Redirect with cache prevention headers
+        return redirect('/')
+            ->with('success', 'You have been logged out successfully.')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
+    
+    
 }

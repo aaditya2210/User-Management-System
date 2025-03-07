@@ -227,14 +227,7 @@
                     contract_end_date: {
                          required: "Select a end date"
                     },
-                    newsletter_subscription: {
-                        required: "Please select the newsletter subscription status"
-                    },
-                    account_balance: {
-                        required: "Please enter the account balance",
-                        number: "Please enter a valid number",
-                        min: "Account balance cannot be negative"
-                    }
+                   
                 },
 
 

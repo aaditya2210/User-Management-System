@@ -11,24 +11,7 @@
 </head>
 <body>
 
-    {{-- <nav class="navbar navbar-dark bg-dark">
-        <div class="container d-flex justify-content-between align-items-center">
-            <a class="navbar-brand" href="{{ route('users.index') }}">User Management</a>
-            
-            <div class="d-flex gap-2">
-                <a class="btn btn-primary" href="{{ url('/users') }}">Dashboard</a>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-box-arrow-right"></i> Logout
-                    </button>
-                </form>
-            </div>
-        </div>
-    </nav> --}}
-    
-
-
+   
 
     <nav class="navbar navbar-dark bg-dark">
         <div class="container d-flex justify-content-between align-items-center">
@@ -62,5 +45,20 @@
     <li><a href="{{ route('customers.index') }}" class="nav-link">Customers</a></li> --}}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (function () {
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
+    
+            window.addEventListener("pageshow", function (event) {
+                if (event.persisted) {
+                    window.location.reload();
+                }
+            });
+        })();
+    </script>
+    
 </body>
 </html>
