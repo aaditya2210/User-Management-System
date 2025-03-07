@@ -186,21 +186,26 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request)
-    {
-        Auth::logout();
-        
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        
-        // Set some additional security-related cookies
-        $response = new \Illuminate\Http\Response(view('auth.logout_redirect', [
-            'loginUrl' => url('/login')
-        ]));
-        
-        $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private');
-        $response->header('Pragma', 'no-cache');
-        $response->header('Expires', '0');
-        
-        return $response;
+{
+    // Revoke access token if using API authentication
+    if ($request->user() && $request->user()->token()) {
+        $request->user()->token()->revoke();
     }
+    
+    Auth::logout();
+    
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    
+    // Set some additional security-related cookies
+    $response = new \Illuminate\Http\Response(view('auth.logout_redirect', [
+        'loginUrl' => url('/login')
+    ]));
+    
+    $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private');
+    $response->header('Pragma', 'no-cache');
+    $response->header('Expires', '0');
+    
+    return $response;
+}
 }
