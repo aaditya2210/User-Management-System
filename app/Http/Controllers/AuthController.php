@@ -192,6 +192,15 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         
-        // Return a special response with JavaScript that clears history
-        return response()->view('auth.logout_redirect', [], 200);
-    }}
+        // Set some additional security-related cookies
+        $response = new \Illuminate\Http\Response(view('auth.logout_redirect', [
+            'loginUrl' => url('/login')
+        ]));
+        
+        $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private');
+        $response->header('Pragma', 'no-cache');
+        $response->header('Expires', '0');
+        
+        return $response;
+    }
+}
