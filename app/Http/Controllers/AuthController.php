@@ -187,22 +187,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout(); // Log out the user
-    
-        // Invalidate and regenerate session
+        Auth::logout();
+        
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-    
-        // Clear authentication cookies
-        Cookie::queue(Cookie::forget('remember_web'));
-    
-        // Redirect with cache prevention headers
-        return redirect('/')
-            ->with('success', 'You have been logged out successfully.')
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
-    }
-    
-    
-}
+        
+        // Return a special response with JavaScript that clears history
+        return response()->view('auth.logout_redirect', [], 200);
+    }}
