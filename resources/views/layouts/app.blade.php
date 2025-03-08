@@ -46,19 +46,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        // Detect if user was previously logged in but now is not
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if this is an authenticated page
-            const requiresAuth = {{ auth()->check() ? 'true' : 'false' }};
-            
-            // If we're on a page that requires auth but user isn't authenticated
-            if (requiresAuth && !{{ auth()->check() ? 'true' : 'false' }}) {
-                // Redirect to login immediately
-                window.location.replace('/login');
-            }
-        });
-    </script>
+    
     
 </body>
 </html>

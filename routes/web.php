@@ -30,7 +30,8 @@ Route::middleware('allow.registration')->group(function () {
 });
 
 // Protected routes (only for authenticated users)
-Route::middleware('auth')->group(function () {
+// Route::middleware('auth')->group(function () {
+    Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
     // User Management
     Route::resource('users', UserController::class);
     Route::get('/users/export/csv', [UserController::class, 'exportCsv'])->name('users.export.csv');
