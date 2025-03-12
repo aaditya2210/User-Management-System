@@ -16,7 +16,7 @@ class StoreCustomerRequest extends FormRequest
         return [
             'name' => 'required|string|max:50',
             'email' => 'required|email|unique:customers|max:50',
-            'contact_number' => 'required|string|max:10',
+            'contact_number' => 'required|digits:10',
             'address' => 'nullable|string|max:500',
             'company_name' => 'nullable|string|max:100',
             'job_title' => 'nullable|string|max:50',

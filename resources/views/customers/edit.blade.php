@@ -116,10 +116,10 @@
                         required: true,
                         email: true
                     },
-                    contact_number: {
-                        required: true,
-                        digits: true
-                    },
+                    contact_number: { 
+                required: true, 
+                phoneValidation: true // Custom method for phone validation
+            },
                     address: {
                         required: true,
                         minlength: 5
@@ -171,10 +171,8 @@
                         required: "Please enter the email",
                         email: "Please enter a valid email address"
                     },
-                    contact_number: {
-                        required: "Please enter the contact number",
-                        digits: "Please enter only digits"
-                    },
+                    contact_number: { required: "Contact number is required.", phoneValidation: "Enter a valid phone number format (e.g., +91 9876543210, 9876543210, 123-456-7890)." },
+
                     address: {
                         required: "Please enter the address",
                         minlength: "Address must be at least 5 characters long"

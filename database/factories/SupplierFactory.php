@@ -2,12 +2,18 @@
 
 namespace Database\Factories;
 
+use App\Models\State;
+use App\Models\City;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SupplierFactory extends Factory
 {
     public function definition(): array
     {
+        // Retrieve a random state and a corresponding city
+        $state = State::inRandomOrder()->first();
+        $city = $state ? City::where('state_id', $state->id)->inRandomOrder()->first() : null;
+
         return [
             'name' => $this->faker->text(100), // Limiting to 100 characters
             'email' => $this->faker->unique()->safeEmail, // Usually within 191 characters
@@ -16,9 +22,8 @@ class SupplierFactory extends Factory
             'company_name' => $this->faker->company, // Usually within 100 characters
             'gst_number' => $this->faker->optional()->regexify('[0-9A-Z]{15}'), // GST format (15 chars)
             'website' => substr($this->faker->url, 0, 150), // Limiting to 150 characters
-            'country' => substr($this->faker->country, 0, 50), // Limiting to 50 characters
-            'state' => substr($this->faker->state, 0, 50), // Limiting to 50 characters
-            'city' => substr($this->faker->city, 0, 50), // Limiting to 50 characters
+            'state_id' => $state ? $state->id : null, // Assigning a random state
+            'city_id' => $city ? $city->id : null, // Assigning a city linked to the state
             'postal_code' => substr($this->faker->postcode, 0, 10), // Ensuring it fits
             'contact_person' => $this->faker->name, // Usually within 100 characters
             'status' => $this->faker->randomElement(['active', 'inactive']),

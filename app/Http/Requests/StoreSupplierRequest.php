@@ -8,7 +8,7 @@ class StoreSupplierRequest extends FormRequest
 {
     public function authorize()
     {
-        return true; // Set to true if all users can create suppliers
+        return true; // Allow all users to create suppliers
     }
 
     public function rules()
@@ -16,19 +16,25 @@ class StoreSupplierRequest extends FormRequest
         return [
             'name' => 'required|string|max:50',
             'email' => 'required|email|unique:suppliers,email',
-            'contact_number' => 'required|string|max:10',
+            'contact_number' => 'required|digits:10',
             'address' => 'nullable|string|max:500',
             'company_name' => 'nullable|string|max:75',
-            'gst_number' => 'nullable|string|max:50|unique:suppliers,gst_number',
+            'gst_number' => 'nullable|string|max:50|unique:suppliers,gst_number,NULL,id',
             'website' => 'nullable|url|max:255',
-            'country' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-            'city' => 'nullable|string|max:100',
+            'state_id' => 'required|exists:states,id',
+            'city_id' => 'required|exists:cities,id',
             'postal_code' => 'nullable|string|max:6',
             'contact_person' => 'nullable|string|max:50',
             'status' => 'required|in:active,inactive',
             'contract_start_date' => 'nullable|date',
-            'contract_end_date' => 'nullable|date|after_or_equal:contract_start_date',
+            'contract_end_date' => [
+                'nullable', 'date',
+                function ($attribute, $value, $fail) {
+                    if (request()->contract_start_date && $value < request()->contract_start_date) {
+                        $fail('The contract end date must be after or equal to the start date.');
+                    }
+                }
+            ],
         ];
     }
 }

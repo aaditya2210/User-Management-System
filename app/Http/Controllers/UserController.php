@@ -27,6 +27,7 @@ class UserController extends Controller {
     public function index(Request $request)
 {
     try {
+        
         $query = User::with(['city', 'state', 'roles'])->where('id', '!=', Auth::id());
 
         if ($request->has('search')) {
@@ -167,6 +168,7 @@ class UserController extends Controller {
                 'gender' => $validated['gender'],
                 'state_id' => $validated['state_id'],
                 'city_id' => $validated['city_id'],
+                'hobbies' => json_encode($validated['hobbies'] ?? []),
                 // 'roles' => json_encode($validated['roles']),
                 'uploaded_files' => json_encode($uploadedFiles)
             ]);
@@ -250,20 +252,66 @@ class UserController extends Controller {
         }
     }
 
-    public function getUsers()
-    {
-        try {
-            // Exclude the logged-in user and paginate with relationships
-            return response()->json(
-                User::where('id', '!=', Auth::id())
-                    ->with(['city', 'state', 'roles'])
-                    ->paginate(5)
-            );
-        } catch (\Exception $e) {
-            Log::error('❌ Error Fetching Users: ' . $e->getMessage());
-            return response()->json(['error' => 'Something went wrong!'], 500);
+    // public function getUsers(Request $request)
+    // {
+    //     try {
+    //         // Exclude the logged-in user and paginate with relationships
+    //         return response()->json(
+    //             User::where('id', '!=', Auth::id())
+    //                 ->with(['city', 'state', 'roles'])
+    //                 ->paginate(5)
+    //         );
+    //     } catch (\Exception $e) {
+    //         Log::error('❌ Error Fetching Users: ' . $e->getMessage());
+    //         return response()->json(['error' => 'Something went wrong!'], 500);
+    //     }
+    // }
+
+   
+
+
+
+
+
+    public function getUsers(Request $request)
+{
+    try {
+        $query = User::where('id', '!=', Auth::id())->with(['city', 'state', 'roles']);
+
+        // Search filter
+        if ($request->has('search') && !empty($request->search)) {
+            $search = trim($request->search); // Remove extra spaces
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%");
+            });
         }
+
+        // Paginate the results
+        $users = $query->paginate(5);
+
+        return response()->json($users);
+
+    } catch (\Exception $e) {
+        Log::error('❌ Error Fetching Users: ' . $e->getMessage());
+
+        // Debug error response
+        return response()->json([
+            'error' => 'Something went wrong!',
+            'message' => $e->getMessage(), // Show actual error message
+        ], 500);
     }
+}
+  
+    
+
+
+
+
+
+
+
+
 
     // CSV Export
     public function exportCSV() {

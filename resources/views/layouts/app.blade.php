@@ -15,7 +15,7 @@
 
     <nav class="navbar navbar-dark bg-dark">
         <div class="container d-flex justify-content-between align-items-center">
-            <a class="navbar-brand" href="{{ route('users.index') }}">User Management</a>
+            <a class="navbar-brand" href="{{ route('users.index') }}">User Management System</a>
     
             <div class="d-flex gap-2">
                 @if (in_array(Route::currentRouteName(), ['login', 'register']))

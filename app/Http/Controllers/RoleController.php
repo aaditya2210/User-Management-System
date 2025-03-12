@@ -9,16 +9,17 @@ use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
 {
-    public function index()
-    {
-        try {
-            $roles = Role::all();
-            return view('roles.index', compact('roles'));
-        } catch (\Exception $e) {
-            Log::error('Error fetching roles: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to load roles.');
-        }
+    public function index(Request $request)
+{
+    $roles = Role::all();
+
+    if ($request->ajax()) {
+        return response()->json(['roles' => $roles]);
     }
+
+    return view('roles.index', compact('roles'));
+}
+
 
     public function create()
     {
@@ -31,23 +32,25 @@ class RoleController extends Controller
     }
 
     public function store(Request $request)
-    {
-        try {
-            $request->validate([
-                'name' => 'required|unique:roles,name'
-            ]);
+{
+    try {
+        $request->validate(['name' => 'required|unique:roles,name']);
+        $role = Role::create(['name' => $request->name]);
 
-            Role::create($request->all());
-            return redirect()->route('roles.index')->with('success', 'Role created successfully.');
-        } catch (\Exception $e) {
-            Log::error('Error creating role: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to create role.');
-        }
+        return response()->json(['message' => 'Role created successfully.', 'role' => $role]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to create role.'], 500);
     }
+}
 
     public function edit(Role $role)
     {
         try {
+            $role = Role::findOrFail($role);
+            if (!view()->exists('roles.edit')) {
+                abort(404, 'View not found');
+            }
+            
             return view('roles.edit', compact('role'));
         } catch (\Exception $e) {
             Log::error('Error opening role edit page: ' . $e->getMessage());
@@ -56,28 +59,32 @@ class RoleController extends Controller
     }
 
     public function update(Request $request, Role $role)
-    {
-        try {
-            $request->validate([
-                'name' => 'required|unique:roles,name,' . $role->id
-            ]);
+{
+    try {
+        $request->validate(['name' => 'required|unique:roles,name,' . $role->id]);
+        $role->update(['name' => $request->name]);
 
-            $role->update($request->all());
-            return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
-        } catch (\Exception $e) {
-            Log::error('Error updating role: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to update role.');
-        }
+        return response()->json(['message' => 'Role updated successfully.']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to update role.'], 500);
     }
+}
 
-    public function destroy(Role $role)
-    {
-        try {
-            $role->delete();
-            return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
-        } catch (\Exception $e) {
-            Log::error('Error deleting role: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to delete role.');
-        }
+public function destroy($id)
+{
+    try {
+        $role = Role::findOrFail($id);
+
+        // Detach users and permissions before deleting the role
+        $role->users()->detach();
+        $role->permissions()->detach();
+
+        $role->delete();
+
+        return response()->json(['success' => 'Role deleted successfully.']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to delete role: ' . $e->getMessage()], 500);
     }
+}
+
 }

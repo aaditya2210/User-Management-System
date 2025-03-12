@@ -27,6 +27,7 @@ Route::middleware('allow.registration')->group(function () {
     Route::get('cities/{state_id}', [CityController::class, 'getCities']);
     Route::get('states', [StateController::class, 'index']);
     Route::get('/get-cities', [UserController::class, 'getCities'])->name('get.cities');
+    Route::get('/get-cities/{state_id}', [SupplierController::class, 'getCities']);
 });
 
 // Protected routes (only for authenticated users)
@@ -48,6 +49,16 @@ Route::middleware('allow.registration')->group(function () {
 
         Route::post('/roles/{role}/assign-permission', [UserRoleController::class, 'assignPermission'])->name('role.assignPermission');
         Route::delete('/roles/{role}/remove-permission', [UserRoleController::class, 'removePermission'])->name('role.removePermission');
+    
+
+        Route::get('/roles/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+        
+        
+        
+        Route::put('/roles/{role}/permissions', [UserRoleController::class, 'updatePermissions'])->name('role.updatePermissions');
+
+    
+    
     });
 
     // Supplier Management (Only users with permission)
@@ -58,3 +69,6 @@ Route::middleware('allow.registration')->group(function () {
     // Customer Management
     Route::resource('customers', CustomerController::class);
 });
+
+
+

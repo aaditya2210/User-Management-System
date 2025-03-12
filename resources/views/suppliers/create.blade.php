@@ -41,12 +41,12 @@
             <input type="url" name="website" class="form-control" required>
         </div>
 
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label>Country</label>
             <input type="text" name="country" class="form-control" required>
-        </div>
+        </div> --}}
 
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label>State</label>
             <input type="text" name="state" class="form-control" required>
         </div>
@@ -54,7 +54,23 @@
         <div class="form-group">
             <label>City</label>
             <input type="text" name="city" class="form-control" required>
-        </div>
+        </div> --}}
+        
+
+        <label for="state">State</label>
+        <select name="state_id" id="state" class="form-control" required>
+            <option value="">Select State</option>
+            @foreach($states as $state)
+                <option value="{{ $state->id }}">{{ $state->name }}</option>
+            @endforeach
+        </select>
+        
+        <label for="city">City</label>
+        <select name="city_id" id="city" class="form-control" required>
+            <option value="">Select City</option>
+        </select>
+        
+
 
         <div class="form-group">
             <label>Postal Code</label>
@@ -87,7 +103,7 @@
         <button type="submit" class="btn btn-success">Save</button>
     </form>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 
     <style>
@@ -105,6 +121,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         $(document).ready(function() {
+
+            $('#state').change(function () {
+    let state_id = $(this).val();
+    $('#city').html('<option value="">Loading...</option>');
+
+    $.ajax({
+        url: '/get-cities/' + state_id, // Ensure correct route
+        type: 'GET',
+        dataType: 'json',  // ✅ Forces jQuery to parse as JSON
+        success: function (data) {
+            console.log("API Response:", data); // Debugging log
+
+            if (!Array.isArray(data)) {
+                console.error("Invalid response format:", data);
+                alert("Unexpected response format.");
+                return;
+            }
+
+            let options = '<option value="">Select City</option>';
+            data.forEach(city => {
+                options += `<option value="${city.id}">${city.name}</option>`;
+            });
+
+            $('#city').html(options);
+        },
+        error: function (xhr, status, error) {
+            console.error("AJAX Error:", error);
+            alert("Error fetching cities.");
+        }
+    });
+});
+
+
             // Apply jQuery validation
             $("#supplierForm").validate({
                 rules: {
@@ -116,12 +165,10 @@
                         required: true,
                         email: true
                     },
-                    contact_number: {
-                        required: true,
-                        digits: true,
-                        minlength: 10,
-                        maxlength: 10
-                    },
+                    contact_number: { 
+                required: true, 
+                phoneValidation: true // Custom method for phone validation
+            },
                     address: {
                         required: true
                     },
@@ -137,13 +184,13 @@
                         required: true,
                         url: true
                     },
-                    country: {
+                    // country: {
+                    //     required: true
+                    // },
+                    state_id: {
                         required: true
                     },
-                    state: {
-                        required: true
-                    },
-                    city: {
+                    city_id: {
                         required: true
                     },
                     postal_code: {
@@ -179,11 +226,8 @@
                         required: "Please enter the email",
                         email: "Please enter a valid email address"
                     },
-                    contact_number: {
-                        required: "Please enter the contact number",
-                        digits: "Please enter only 10 digits",
-                        minlength: "Must be 10 digits.", maxlength: "Must be 10 digits."
-                    },
+                    contact_number: { required: "Contact number is required.", phoneValidation: "Enter a valid phone number format (e.g., +91 9876543210, 9876543210, 123-456-7890)." },
+
                     address: {
                         required: "Please enter the address",
                         minlength: "Address must be at least 5 characters long"
@@ -200,13 +244,13 @@
                     website: {
                         required:  "Enter a valid URL"
                     },
-                    country: {
-                        required: "Please enter country"
-                    },
-                    state: {
+                    // country: {
+                    //     required: "Please enter country"
+                    // },
+                    state_id: {
                         required: "Please enter state"
                     },
-                    city: {
+                    city_id: {
                         required: "Please enter city"
                     },
                     postal_code: {
@@ -268,30 +312,55 @@
                             }, 1000);
                         },
 
-                        error: function(xhr) {
-                            $('#submitBtn').prop('disabled', false).text('Submit');
+        //                 error: function(xhr) {
+        //                     $('#submitBtn').prop('disabled', false).text('Submit');
 
-                            if (xhr.responseJSON && xhr.responseJSON.errors) {
-                                var errors = xhr.responseJSON.errors;
-                                var errorHtml = '<div class="alert alert-danger"><ul>';
-                                $.each(errors, function(key, value) {
-                                    errorHtml += '<li>' + value + '</li>';
-                                    toastr.error(value,
-                                    "Error"); // Show Toastr error for each validation error
-                                });
-                                errorHtml += '</ul></div>';
-                                $('#formErrors').html(errorHtml);
-                            } else {
-                                toastr.error(
-                                    "An unexpected error occurred. Please try again.",
-                                    "Error");
-                            }
-                        }
+        //                     if (xhr.responseJSON && xhr.responseJSON.errors) {
+        //                         var errors = xhr.responseJSON.errors;
+        //                         var errorHtml = '<div class="alert alert-danger"><ul>';
+        //                         $.each(errors, function(key, value) {
+        //                             errorHtml += '<li>' + value + '</li>';
+        //                             toastr.error(value,
+        //                             "Error"); // Show Toastr error for each validation error
+        //                         });
+        //                         errorHtml += '</ul></div>';
+        //                         $('#formErrors').html(errorHtml);
+        //                     } else {
+        //                         toastr.error(
+        //                             "An unexpected error occurred. Please try again.",
+        //                             "Error");
+        //                     }
+        //                 }
 
 
-                    });
-                }
-            });
+        //             });
+        //         }
+        //     });
+        // });
+
+
+        error: function(xhr) {
+    console.error("XHR Error:", xhr);
+    console.log("Response Text:", xhr.responseText); // Log response
+
+    $('#submitBtn').prop('disabled', false).text('Submit');
+
+    if (xhr.responseJSON && xhr.responseJSON.errors) {
+        var errors = xhr.responseJSON.errors;
+        var errorHtml = '<div class="alert alert-danger"><ul>';
+        $.each(errors, function(key, value) {
+            errorHtml += '<li>' + value + '</li>';
+            toastr.error(value, "Error");
         });
+        errorHtml += '</ul></div>';
+        $('#formErrors').html(errorHtml);
+    } else {
+        toastr.error("An unexpected error occurred: " + xhr.statusText, "Error");
+    }
+}
+});
+}
+});
+});
     </script>
 @endsection

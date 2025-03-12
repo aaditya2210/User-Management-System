@@ -87,7 +87,11 @@ class AuthController extends Controller
             if (isset($tokenResponse->access_token)) {
                 session(['access_token' => $tokenResponse->access_token]);
                 event(new UserRegistered($user));
-                return redirect()->to('http://127.0.0.1:8000/login')->with('success', 'Registration successful! Please log in.');
+                // return redirect()->to('http://127.0.0.1:8000/users')->with('success', 'Registration successful!');
+                Auth::login($user);
+                return redirect()->to('http://127.0.0.1:8000/users')->with('success', 'Registration successful!');
+                
+            
             }
 
             Log::error('Token generation failed during registration.');

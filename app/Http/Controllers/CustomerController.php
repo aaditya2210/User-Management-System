@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CustomersExport;
@@ -11,22 +12,48 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use Illuminate\Support\Facades\Auth;
 
 
 class CustomerController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     try {
+    //         if ($request->ajax()) {
+    //             return response()->json(Customer::paginate(4));
+    //         }
+    //         return view('customers.index');
+    //     } catch (\Exception $e) {
+    //         Log::error('Error fetching customers:', ['error' => $e->getMessage()]);
+    //         return response()->json(['error' => 'Failed to fetch customers'], 500);
+    //     }
+    // }
+
+
     public function index(Request $request)
-    {
-        try {
-            if ($request->ajax()) {
-                return response()->json(Customer::paginate(4));
-            }
-            return view('customers.index');
-        } catch (\Exception $e) {
-            Log::error('Error fetching customers:', ['error' => $e->getMessage()]);
-            return response()->json(['error' => 'Failed to fetch customers'], 500);
+{
+    try {
+        $query = Customer::query();
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
         }
+
+        if ($request->ajax()) {
+            return response()->json($query->paginate(4));
+        }
+
+        return view('customers.index');
+    } catch (\Exception $e) {
+        Log::error('Error fetching customers:', ['error' => $e->getMessage()]);
+        return response()->json(['error' => 'Failed to fetch customers'], 500);
     }
+}
+
+
 
     public function create()
     {
@@ -194,4 +221,29 @@ class CustomerController extends Controller
             return redirect()->route('customers.index')->with('error', 'Failed to export customers to PDF.');
         }
     }
+
+
+
+    public function getCustomers(Request $request)
+{
+    try {
+        $query = User::where('id', '!=', Auth::id())->with(['city', 'state', 'roles']);
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%");
+                //   ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
+
+        return response()->json($query->paginate(5));
+    } catch (\Exception $e) {
+        Log::error('❌ Error Fetching Suppliers: ' . $e->getMessage());
+        return response()->json(['error' => 'Something went wrong!'], 500);
+    }
+
+}
+
+
 }

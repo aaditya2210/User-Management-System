@@ -16,9 +16,19 @@ class AllowCityStateForRegistration
         $referer = $request->headers->get('Referer');
 
         // If the referer contains '/users/{user}/edit', store it in session
-        if ($referer && str_contains($referer, '/users/') && str_contains($referer, '/edit')) {
+        // if ($referer && str_contains($referer, '/users/') && str_contains($referer, '/edit')) {
+        //     Session::put('edit_page', $referer);
+        // }
+
+
+        // If the referer contains '/users/{user}/edit' or '/suppliers/{supplier}/edit', store it in session
+        if (
+            $referer &&
+            (preg_match('/\/users\/\d+\/edit/', $referer) || preg_match('/\/suppliers\/\d+\/edit/', $referer))
+        ) {
             Session::put('edit_page', $referer);
         }
+
 
         // Retrieve the stored edit page from the session
         $editPage = Session::get('edit_page');
@@ -27,6 +37,7 @@ class AllowCityStateForRegistration
         $allowedPages = [
             route('register'), // Registration Page
             url('users/create'), // User Creation Page
+            url('suppliers/create'), // User Creation Page
             $editPage // Store and use the edit page referer
         ];
 

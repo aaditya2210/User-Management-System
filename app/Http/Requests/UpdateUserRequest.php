@@ -19,6 +19,7 @@ class UpdateUserRequest extends FormRequest
             'contact_number' => 'required|digits:10',
             'postcode' => 'required|digits:6',
             'gender' => 'required',
+            'hobbies' => 'nullable|array',
             // 'roles' => 'required|array',
             'city_id' => 'required|exists:cities,id',
             'state_id' => 'required|exists:states,id',

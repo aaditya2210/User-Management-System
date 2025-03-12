@@ -29,7 +29,7 @@
                     <th style="width: 10%;">Company Name</th>
                     <th style="width: 10%;">GST Number</th>
                     <th style="width: 10%;">Website</th>
-                    <th style="width: 8%;">Country</th>
+                    {{-- <th style="width: 8%;">Country</th> --}}
                     <th style="width: 8%;">State</th>
                     <th style="width: 8%;">City</th>
                     <th style="width: 8%;">Postal Code</th>
@@ -49,7 +49,7 @@
                         <td>{{ $supplier->company_name }}</td>
                         <td>{{ $supplier->gst_number }}</td>
                         <td>{{ $supplier->website }}</td>
-                        <td>{{ $supplier->country }}</td>
+                        {{-- <td>{{ $supplier->country }}</td> --}}
                         <td>{{ $supplier->state }}</td>
                         <td>{{ $supplier->city }}</td>
                         <td>{{ $supplier->postal_code }}</td>

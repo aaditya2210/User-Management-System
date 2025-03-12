@@ -22,8 +22,8 @@ class UpdateSupplierRequest extends FormRequest
             'gst_number' => 'nullable|string|max:50|unique:suppliers,gst_number,' . $this->supplier->id,
             'website' => 'nullable|url|max:255',
             'country' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-            'city' => 'nullable|string|max:100',
+            'state_id' => 'required|exists:states,id', // Ensure state exists in the database
+            'city_id' => 'required|exists:cities,id', // Ensure city exists in the database
             'postal_code' => 'nullable|string|max:20',
             'contact_person' => 'nullable|string|max:50',
             'status' => 'required|in:active,inactive',

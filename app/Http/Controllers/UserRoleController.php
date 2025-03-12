@@ -110,4 +110,28 @@ class UserRoleController extends Controller
         'permissions' => $user->permissions->pluck('name'),
     ]);
 }
+
+
+
+
+
+
+
+
+public function updatePermissions(Request $request, Role $role)
+{
+    try {
+        // Retrieve selected permissions from the request (default to empty array)
+        $selectedPermissions = $request->input('permissions', []);
+
+        // Sync permissions (removes unchecked ones and keeps checked ones)
+        $role->syncPermissions($selectedPermissions);
+
+        return redirect()->back()->with('success', 'Permissions updated successfully.');
+    } catch (\Exception $e) {
+        Log::error("❌ Error updating permissions: " . $e->getMessage());
+        return back()->withErrors(['error' => 'Failed to update permissions.']);
+    }
+}
+
 }

@@ -159,10 +159,20 @@ document.getElementById('roleSearch').addEventListener('input', function () {
                 first_name: { required: true, alphanumeric: true },
                 last_name: { required: true, alphanumeric: true },
                 email: { required: true, email: true },
-                contact_number: { required: true, digits: true, minlength: 10, maxlength: 10 },
+                contact_number: { 
+                required: true, 
+                phoneValidation: true // Custom method for phone validation
+            },
                 postcode: { required: true, digits: true, minlength: 6, maxlength: 6 },
-                password: { required: true, minlength: 6 },
-                password_confirmation: { required: true, equalTo: "#password" },
+                password: { 
+                required: true, 
+                minlength: 8,
+                strongPassword: true 
+            },
+            password_confirmation: { 
+                required: true, 
+                equalTo: "#password" 
+            },
                 gender: { required: true },
                 "roles[]": { required: true },
                 "hobbies[]": { required: true, minlength: 1 },
@@ -174,10 +184,18 @@ document.getElementById('roleSearch').addEventListener('input', function () {
                 first_name: { required: "First name is required.", alphanumeric: "Only letters and numbers are allowed" },
                 last_name: { required: "Last name is required.", alphanumeric: "Only letters and numbers are allowed" },
                 email: { required: "Email is required.", email: "Enter a valid email." },
-                contact_number: { required: "Contact number is required.", digits: "Only digits are allowed.", minlength: "Must be 10 digits.", maxlength: "Must be 10 digits." },
+                // contact_number: { required: "Contact number is required.", digits: "Only digits are allowed.", minlength: "Must be 10 digits.", maxlength: "Must be 10 digits." },
+                contact_number: { required: "Contact number is required.", phoneValidation: "Enter a valid phone number format (e.g., +91 9876543210, 9876543210, 123-456-7890)." },
                 postcode: { required: "Postcode is required.", digits: "Only digits are allowed.", minlength: "Must be 6 digits.", maxlength: "Must be 6 digits." },
-                password: { required: "Password is required.", minlength: "Password must be at least 6 characters." },
-                password_confirmation: { required: "Confirm your password.", equalTo: "Passwords do not match." },
+                password: { 
+                required: "Password is required.", 
+                minlength: "Password must be at least 8 characters.",
+                strongPassword: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character."
+            },
+            password_confirmation: { 
+                required: "Confirm your password.", 
+                equalTo: "Passwords do not match." 
+            },
                 gender: { required: "Select a gender." },
                 "roles[]": { required: "Select at least one role." },
                 "hobbies[]": { required: "Select at least one hobby." },
@@ -186,6 +204,20 @@ document.getElementById('roleSearch').addEventListener('input', function () {
                 "uploaded_files[]": { required: "Please upload at least one file." }
             }
         });
+
+
+    // Custom validation method for strong passwords
+        $.validator.addMethod("strongPassword", function (value, element) {
+        return this.optional(element) || 
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
+    }, "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.");
+
+
+           // Custom phone number validation method
+           $.validator.addMethod("phoneValidation", function (value, element) {
+    return this.optional(element) || /^(?!0{10})(\+?\d{1,3}[-.\s]?)?\d{10}$/.test(value);
+}, "Enter a valid phone number format.");
+
 
         $.validator.addMethod("alphanumeric", function (value, element) {
             return this.optional(element) || /^[a-zA-Z0-9]+$/.test(value);

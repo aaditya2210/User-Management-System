@@ -60,37 +60,27 @@
         <thead>
             <tr>
                 <th>Role</th>
-                <th>Current Permissions</th>
-                <th>Assign Permission</th>
-                <th>Remove Permission</th>
+                <th>Permissions</th>
             </tr>
         </thead>
         <tbody>
             @foreach($roles as $role)
             <tr>
                 <td>{{ $role->name }}</td>
-                <td>{{ implode(', ', $role->permissions->pluck('name')->toArray()) }}</td>
                 <td>
-                    <form action="{{ route('role.assignPermission', $role->id) }}" method="POST">
+                    <form action="{{ route('role.updatePermissions', $role->id) }}" method="POST">
                         @csrf
-                        <select name="permission" class="form-control" required>
+                        @method('PUT')
+                        <div class="d-flex flex-wrap">
                             @foreach($permissions as $permission)
-                                <option value="{{ $permission->name }}">{{ $permission->name }}</option>
+                                <div class="form-check me-3">
+                                    <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" class="form-check-input" 
+                                        {{ $role->permissions->contains('name', $permission->name) ? 'checked' : '' }}>
+                                    <label class="form-check-label">{{ $permission->name }}</label>
+                                </div>
                             @endforeach
-                        </select>
-                        <button type="submit" class="btn btn-success mt-1">Assign</button>
-                    </form>
-                </td>
-                <td>
-                    <form action="{{ route('role.removePermission', $role->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <select name="permission" class="form-control" required>
-                            @foreach($role->permissions as $permission)
-                                <option value="{{ $permission->name }}">{{ $permission->name }}</option>
-                            @endforeach
-                        </select>
-                        <button type="submit" class="btn btn-danger mt-1">Remove</button>
+                        </div>
+                        <button type="submit" class="btn btn-success mt-2">Update Permissions</button>
                     </form>
                 </td>
             </tr>
