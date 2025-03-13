@@ -62,12 +62,34 @@ Route::middleware('allow.registration')->group(function () {
     });
 
     // Supplier Management (Only users with permission)
-    Route::middleware('permission:manage-suppliers')->group(function () {
-        Route::resource('suppliers', SupplierController::class);
+    // Route::middleware('permission:manage-suppliers')->group(function () {
+    //     Route::resource('suppliers', SupplierController::class);
+    // });
+
+
+    Route::middleware('auth')->group(function () {
+        Route::get('suppliers', [SupplierController::class, 'index'])->middleware('permission:read-suppliers')->name('suppliers.index');
+        Route::get('suppliers/create', [SupplierController::class, 'create'])->middleware('permission:create-suppliers')->name('suppliers.create');
+        Route::post('suppliers', [SupplierController::class, 'store'])->middleware('permission:create-suppliers')->name('suppliers.store');
+        Route::get('suppliers/{supplier}', [SupplierController::class, 'show'])->middleware('permission:read-suppliers')->name('suppliers.show');
+        Route::get('suppliers/{supplier}/edit', [SupplierController::class, 'edit'])->middleware('permission:update-suppliers')->name('suppliers.edit');
+        Route::put('suppliers/{supplier}', [SupplierController::class, 'update'])->middleware('permission:update-suppliers')->name('suppliers.update');
+        Route::delete('suppliers/{supplier}', [SupplierController::class, 'destroy'])->middleware('permission:delete-suppliers')->name('suppliers.destroy');
     });
+    
 
     // Customer Management
-    Route::resource('customers', CustomerController::class);
+  
+    Route::middleware('auth')->group(function () {
+        Route::get('customers', [CustomerController::class, 'index'])->middleware('permission:read-customers')->name('customers.index');
+        Route::get('customers/create', [CustomerController::class, 'create'])->middleware('permission:create-customers')->name('customers.create');
+        Route::post('customers', [CustomerController::class, 'store'])->middleware('permission:create-customers')->name('customers.store');
+        Route::get('customers/{customer}', [CustomerController::class, 'show'])->middleware('permission:read-customers')->name('customers.show');
+        Route::get('customers/{customer}/edit', [CustomerController::class, 'edit'])->middleware('permission:update-customers')->name('customers.edit');
+        Route::put('customers/{customer}', [CustomerController::class, 'update'])->middleware('permission:update-customers')->name('customers.update');
+        Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])->middleware('permission:delete-customers')->name('customers.destroy');
+    });
+    
 });
 
 

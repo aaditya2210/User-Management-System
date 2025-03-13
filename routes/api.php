@@ -75,8 +75,8 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/users/{id}', [UserController::class, 'update']); // Update user details
     Route::delete('/users/{id}', [UserController::class, 'destroy']); // Delete a user
 
-});
     // Export user data
     Route::get('/users/export/csv', [UserController::class, 'exportCsv']); 
     Route::get('/users/export/excel', [UserController::class, 'exportExcel']); 
     Route::get('/users/export/pdf', [UserController::class, 'exportPdf']); 
+});

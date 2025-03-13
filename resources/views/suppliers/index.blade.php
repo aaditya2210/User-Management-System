@@ -3,10 +3,13 @@
 @section('content')
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">Supplier Management</h2>
-        @can('manage-suppliers')
+        <h2 class="fw-bold text-primary" style="font-size: 1.5rem;">Supplier Management</h2>
+        {{-- <h2 class="fw-bold text-primary">Supplier Management</h2> --}}
+
+        {{-- @can('manage-suppliers') --}}
+        @can('create-suppliers')
             <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Add Supplier
+                <i class="fas fa-user-plus me-2"></i>Add Supplier
             </a>
         @endcan
     </div>
@@ -25,10 +28,10 @@
                 </div>
                 <div class="col-md-6">
                     <div class="btn-group float-md-end">
-                        <button class="btn btn-outline-success" id="exportCSV">
+                        <button class="btn btn-outline-primary" id="exportCSV">
                             <i class="fas fa-file-csv me-1"></i> CSV
                         </button>
-                        <button class="btn btn-outline-primary" id="exportExcel">
+                      <button class="btn btn-outline-success"id="exportExcel">
                             <i class="fas fa-file-excel me-1"></i> Excel
                         </button>
                         <button class="btn btn-outline-danger" id="exportPDF">
@@ -182,11 +185,14 @@
                                 <td>${startDate}</td>
                                 <td>${endDate}</td>
                                 <td class="text-center">
-                                    @can('manage-suppliers')
+                                 
+                                    @can('update-suppliers')
                                     <div class="btn-group btn-group-sm">
                                         <a href="/suppliers/${supplier.id}/edit" class="btn btn-outline-primary">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        @endcan
+                                        @can('delete-suppliers')
                                         <button class="btn btn-outline-danger" onclick="showDeleteConfirmation(${supplier.id})">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>

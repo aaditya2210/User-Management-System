@@ -226,9 +226,16 @@
 
 
    // Custom phone number validation method
+
+
    $.validator.addMethod("phoneValidation", function (value, element) {
-    return this.optional(element) || /^(?!0{10})(\+?\d{1,3}[-.\s]?)?\d{10}$/.test(value);
-}, "Enter a valid phone number format.");
+    return this.optional(element) || /^(?!0{10})(\d{10}|\+91\d{10})$/.test(value);
+}, "Enter a valid phone number (10 digits or +91 format).");
+
+
+//    $.validator.addMethod("phoneValidation", function (value, element) {
+//     return this.optional(element) || /^(?!0{10})(\+?\d{1,3}[-.\s]?)?\d{10}$/.test(value);
+// }, "Enter a valid phone number format.");
 
 
             // Custom validation method for alphanumeric fields

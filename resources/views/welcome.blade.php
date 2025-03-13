@@ -9,11 +9,14 @@
 <body class="bg-gray-100">
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-md p-4">
+    {{-- <nav class="bg-white shadow-md p-4"> --}}
+    <nav class="bg-gray-900 shadow-md p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="{{ url('/') }}" class="text-xl font-semibold text-gray-800">User Management System</a>
+            {{-- <a href="{{ url('/') }}" class="text-xl font-semibold text-gray-800">User Management System</a> --}}
+            <a href="{{ url('/') }}" class="text-xl font-semibold text-white">User Management System</a>
             <div>
-                <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900 px-4">Login</a>
+                <a href="{{ route('login') }}" class="text-gray-300 hover:text-white px-4">Login</a>
+                {{-- <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900 px-4">Login</a> --}}
                 <a href="{{ route('register') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Register</a>
             </div>
         </div>

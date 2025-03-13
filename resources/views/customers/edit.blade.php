@@ -106,6 +106,11 @@
 
     <script>
         $(document).ready(function() {
+
+            $.validator.addMethod("phoneValidation", function (value, element) {
+    return this.optional(element) || /^(?!0{10})(\d{10}|\+91\d{10})$/.test(value);
+}, "Enter a valid phone number (10 digits or +91 format).");
+
             $('#editCustomerForm').validate({
                 rules: {
                     name: {

@@ -134,4 +134,21 @@ public function updatePermissions(Request $request, Role $role)
     }
 }
 
+public function updateSupplier(Request $request, User $user)
+{
+    if (!Auth::user()->can('update-suppliers')) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    try {
+        // Your update logic here
+        return back()->with('success', 'Supplier updated successfully.');
+    } catch (\Exception $e) {
+        Log::error("❌ Error updating supplier: " . $e->getMessage());
+        return back()->withErrors(['error' => 'Failed to update supplier.']);
+    }
+}
+
+
+
 }

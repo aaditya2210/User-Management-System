@@ -3,8 +3,11 @@
 @section('content')
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">Customer Management</h2>
-        @can('manage-customers')
+        <h2 class="fw-bold text-primary" style="font-size: 1.5rem;">Customer Management</h2>
+        {{-- <h2 class="fw-bold text-primary">Customer Management</h2> --}}
+      
+        {{-- @can('manage-customers') --}}
+        @can('create-customers')
             <a href="{{ route('customers.create') }}" class="btn btn-primary">
                 <i class="fas fa-user-plus me-2"></i>Add Customer
             </a>
@@ -185,18 +188,22 @@
                                     }
                                 </td>
                                 <td>${formattedBalance}</td>
-                                @can('manage-customers')
+                            
                                 <td class="text-center">
+                                    @can('update-customers')
                                     <div class="btn-group btn-group-sm">
                                         <a href="/customers/${customer.id}/edit" class="btn btn-outline-primary">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                         @endcan
+                                          @can('delete-customers')
                                         <button class="btn btn-outline-danger" onclick="showDeleteConfirmation(${customer.id})">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
+                                           @endcan
                                     </div>
                                 </td>
-                                @endcan
+                             
                             </tr>
                         `);
                     });

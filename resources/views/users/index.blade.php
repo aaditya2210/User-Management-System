@@ -9,9 +9,13 @@
         $userRoles = $loggedInUser->roles->pluck('name')->implode(', ');
     @endphp
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary" style="font-size: 1.5rem;">Users Management</h2>
+</div>
+
+    {{-- <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">Users Management</h2>
-    </div>
+    </div> --}}
 
     <!-- User Info Panel -->
     <div class="card shadow-sm mb-4">
@@ -43,12 +47,12 @@
                 </div>
                 <div class="col-md-6">
                     <div class="btn-group float-md-end">
-                        <a href="{{ route('suppliers.index') }}" class="btn btn-outline-primary">
+                        {{-- <a href="{{ route('suppliers.index') }}" class="btn btn-outline-primary">
                             <i class="fas fa-box me-1"></i> Suppliers
                         </a>
                         <a href="{{ route('customers.index') }}" class="btn btn-outline-info">
                             <i class="fas fa-users me-1"></i> Customers
-                        </a>
+                        </a> --}}
                         <div class="dropdown">
                             <button id="exportDropdown" type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-download me-1"></i> Export
@@ -79,15 +83,15 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0 text-dark">User Database</h5>
                 <div class="btn-group">
-                    @role('admin')
+                    @can('create-users')
+                    {{-- @role('admin') --}}
                         <a href="{{ route('users.create') }}" class="btn btn-primary">
                             <i class="fas fa-user-plus me-1"></i> Add User
                         </a>
-                    @elsecan('manage-users')
-                        <a href="{{ route('users.create') }}" class="btn btn-primary">
+                        {{-- <a href="{{ route('users.create') }}" class="btn btn-primary">
                             <i class="fas fa-user-plus me-1"></i> Add User
-                        </a>
-                    @endrole
+                        </a> --}}
+                    @endcan
                     <a href="{{ url('/user-roles') }}" class="btn btn-outline-warning">
                         <i class="fas fa-shield-alt me-1"></i> Manage User Roles
                     </a>
@@ -325,28 +329,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // Create actions buttons based on permissions
             let actionsHtml = `
-            @role('admin')
-                <a href="/users/${user.id}/edit" class="btn btn-warning btn-sm mb-1 w-100">
-                    <i class="fas fa-pencil-square"></i> Edit
+           @can('update-users')
+                <a href="/users/${user.id}/edit" class="btn btn-outline-primary">
+                    <i class="fas fa-edit"></i> Edit
                 </a>
-            @elsecan('manage-users')
-                <a href="/users/${user.id}/edit" class="btn btn-warning btn-sm mb-1 w-100">
-                    <i class="fas fa-pencil-square"></i> Edit
-                </a>
-            @endrole
+            @endcan
         `;
 
             if (user.id != localStorage.getItem("user_id")) {
                 actionsHtml += `
-                @role('admin')
+               @can('delete-users')
                     <button class="btn btn-danger btn-sm delete-user w-100" data-id="${user.id}">
-                        <i class="fas fa-trash"></i> Delete
+                          <i class="fas fa-trash-alt"></i> Delete
                     </button>
-                @elsecan('manage-users')
-                    <button class="btn btn-danger btn-sm delete-user w-100" data-id="${user.id}">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                @endrole
+                @endcan
             `;
             }
 
@@ -590,28 +586,82 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Export buttons with loading states
-    $('#exportCsv').click(function(e) {
-        e.preventDefault();
-        $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
-        window.location.href = `/api/users/export/csv?token=${localStorage.getItem("access_token")}`;
-        setTimeout(() => $(this).html('<i class="fas fa-file-csv me-1"></i> CSV'), 1500);
-    });
+    // // Export buttons with loading states
+    // $('#exportCsv').click(function(e) {
+    //     e.preventDefault();
+    //     $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
+    //     window.location.href = `/api/users/export/csv?token=${localStorage.getItem("access_token")}`;
+    //     setTimeout(() => $(this).html('<i class="fas fa-file-csv me-1"></i> CSV'), 1500);
+    // });
 
-    $('#exportExcel').click(function(e) {
-        e.preventDefault();
-        $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
-        window.location.href = `/api/users/export/excel?token=${localStorage.getItem("access_token")}`;
-        setTimeout(() => $(this).html('<i class="fas fa-file-excel me-1"></i> Excel'), 1500);
-    });
+    // $('#exportExcel').click(function(e) {
+    //     e.preventDefault();
+    //     $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
+    //     window.location.href = `/api/users/export/excel?token=${localStorage.getItem("access_token")}`;
+    //     setTimeout(() => $(this).html('<i class="fas fa-file-excel me-1"></i> Excel'), 1500);
+    // });
 
-    $('#exportPdf').click(function(e) {
-        e.preventDefault();
-        $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
-        window.location.href = `/users/export/pdf?token=${localStorage.getItem("access_token")}`;
-        setTimeout(() => $(this).html('<i class="fas fa-file-pdf me-1"></i> PDF'), 1500);
-    });
+    // $('#exportPdf').click(function(e) {
+    //     e.preventDefault();
+    //     $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
+    //     window.location.href = `/users/export/pdf?token=${localStorage.getItem("access_token")}`;
+    //     setTimeout(() => $(this).html('<i class="fas fa-file-pdf me-1"></i> PDF'), 1500);
+    // });
+
+
+    function exportData(format) {
+        let token = localStorage.getItem("access_token");
+        if (!token) {
+            alert("Authorization token is missing!");
+            return;
+        }
+
+        let exportUrls = {
+            csv: "/api/users/export/csv",
+            excel: "/api/users/export/excel",
+            pdf: "/api/users/export/pdf"
+        };
+
+        let button = $(`#export${format.charAt(0).toUpperCase() + format.slice(1)}`);
+        button.html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
+
+        $.ajax({
+            url: exportUrls[format],
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Accept": "application/json"
+            },
+            xhrFields: {
+                responseType: 'blob' // Ensures file download
+            },
+            success: function(response, status, xhr) {
+                let filename = xhr.getResponseHeader('Content-Disposition')?.split('filename=')[1] || `users.${format}`;
+                let blob = new Blob([response], { type: xhr.getResponseHeader('Content-Type') });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename.replace(/"/g, '');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+            error: function(xhr) {
+                alert("Failed to export: " + xhr.responseText);
+            },
+            complete: function() {
+                setTimeout(() => {
+                    let icons = { csv: "file-csv", excel: "file-excel", pdf: "file-pdf" };
+                    button.html(`<i class="fas fa-${icons[format]} me-1"></i> ${format.toUpperCase()}`);
+                }, 1500);
+            }
+        });
+    }
+
+    $("#exportCsv").click(function(e) { e.preventDefault(); exportData('csv'); });
+    $("#exportExcel").click(function(e) { e.preventDefault(); exportData('excel'); });
+    $("#exportPdf").click(function(e) { e.preventDefault(); exportData('pdf'); });
 });
+
 
 </script>
 @endsection

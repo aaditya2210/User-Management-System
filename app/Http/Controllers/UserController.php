@@ -25,41 +25,39 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller {
 
     public function index(Request $request)
-{
-    try {
-        
-        $query = User::with(['city', 'state', 'roles'])->where('id', '!=', Auth::id());
-
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('first_name', 'like', "%$search%")
-                  ->orWhere('last_name', 'like', "%$search%")
-                  ->orWhere('email', 'like', "%$search%");
-            });
+    {
+        try {
+            
+            $query = User::with(['city', 'state', 'roles'])->where('id', '!=', Auth::id());
+    
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%$search%")
+                      ->orWhere('last_name', 'like', "%$search%")
+                      ->orWhere('email', 'like', "%$search%");
+                });
+            }
+    
+            if ($request->ajax()) {
+                $users = $query->paginate(3); // Single instance
+    
+                return response()->json([
+                    'data' => $users->items(),
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                    'per_page' => $users->perPage(),
+                    'total' => $users->total(),
+                ]);
+            }
+    
+            $users = $query->paginate(3);
+            return view('users.index', compact('users'));
+        } catch (\Exception $e) {
+            Log::error('❌ Error Fetching Users: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Something went wrong!']);
         }
-
-        if ($request->ajax()) {
-            $users = $query->paginate(3); // Single instance
-
-            return response()->json([
-                'data' => $users->items(),
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage(),
-                'per_page' => $users->perPage(),
-                'total' => $users->total(),
-            ]);
-        }
-
-        $users = $query->paginate(3);
-        return view('users.index', compact('users'));
-    } catch (\Exception $e) {
-        Log::error('❌ Error Fetching Users: ' . $e->getMessage());
-        return back()->withErrors(['error' => 'Something went wrong!']);
     }
-}
-
-
     public function create() {
         try {
             $states = State::all();
