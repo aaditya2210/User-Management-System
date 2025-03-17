@@ -23,12 +23,14 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/suppliers/{supplier}/edit', [SupplierController::class, 'edit'])->name('suppliers.edit');
     Route::put('/suppliers/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
     Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
-});
-
-// Route::middleware('auth:api')->group(function () {
+   
+   
     Route::get('/suppliers/export/csv', [SupplierController::class, 'exportCSV']);
     Route::get('/suppliers/export/excel', [SupplierController::class, 'exportExcel']);
     Route::get('/suppliers/export/pdf', [SupplierController::class, 'exportPDF']);
+});
+
+// Route::middleware('auth:api')->group(function () {
 // });
 
 
@@ -44,10 +46,13 @@ use App\Http\Controllers\CustomerController;
 Route::middleware('auth:api')->group(function () {
     Route::resource('customers', CustomerController::class);
     Route::get('/customers', [CustomerController::class, 'index']);
+
+
+    
+    Route::get('/customers/export/csv', [CustomerController::class, 'exportCSV']);
+    Route::get('/customers/export/excel', [CustomerController::class, 'exportExcel']);
+    Route::get('/customers/export/pdf', [CustomerController::class, 'exportPDF']);
 });
-Route::get('/customers/export/csv', [CustomerController::class, 'exportCSV']);
-Route::get('/customers/export/excel', [CustomerController::class, 'exportExcel']);
-Route::get('/customers/export/pdf', [CustomerController::class, 'exportPDF']);
 
 
 

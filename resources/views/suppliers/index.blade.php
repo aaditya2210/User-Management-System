@@ -337,18 +337,12 @@
             }, 400);
         });
         
-        // Export buttons with loading states
-        $('#exportCSV').click(function() {
-            $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
-            window.location.href = `/api/suppliers/export/csv?token=${localStorage.getItem("access_token")}`;
-            setTimeout(() => $(this).html('<i class="fas fa-file-csv me-1"></i> CSV'), 1500);
-        });
-
-        $('#exportExcel').click(function() {
-            $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
-            window.location.href = `/api/suppliers/export/excel?token=${localStorage.getItem("access_token")}`;
-            setTimeout(() => $(this).html('<i class="fas fa-file-excel me-1"></i> Excel'), 1500);
-        });
+        // // Export buttons with loading states
+        // $('#exportCSV').click(function() {
+        //     $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
+        //     window.location.href = `/api/suppliers/export/csv?token=${localStorage.getItem("access_token")}`;
+        //     setTimeout(() => $(this).html('<i class="fas fa-file-csv me-1"></i> CSV'), 1500);
+        // });
 
         // $('#exportExcel').click(function() {
         //     $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
@@ -356,14 +350,89 @@
         //     setTimeout(() => $(this).html('<i class="fas fa-file-excel me-1"></i> Excel'), 1500);
         // });
 
+        // // $('#exportExcel').click(function() {
+        // //     $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
+        // //     window.location.href = `/api/suppliers/export/excel?token=${localStorage.getItem("access_token")}`;
+        // //     setTimeout(() => $(this).html('<i class="fas fa-file-excel me-1"></i> Excel'), 1500);
+        // // });
 
 
 
-        $('#exportPDF').click(function() {
-            $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
-            window.location.href = `/api/suppliers/export/pdf?token=${localStorage.getItem("access_token")}`;
-            setTimeout(() => $(this).html('<i class="fas fa-file-pdf me-1"></i> PDF'), 1500);
-        });
+
+        // $('#exportPDF').click(function() {
+        //     $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
+        //     window.location.href = `/api/suppliers/export/pdf?token=${localStorage.getItem("access_token")}`;
+        //     setTimeout(() => $(this).html('<i class="fas fa-file-pdf me-1"></i> PDF'), 1500);
+        // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function exportData(format) {
+    let token = localStorage.getItem("access_token");
+    if (!token) {
+        alert("Authorization token is missing!");
+        return;
+    }
+
+    let exportUrls = {
+        csv: "/api/suppliers/export/csv",
+        excel: "/api/suppliers/export/excel",
+        pdf: "/api/suppliers/export/pdf"
+    };
+
+    let button = $(`#export${format.toUpperCase()}`);
+    button.html('<i class="fas fa-spinner fa-spin me-1"></i> Exporting...');
+
+    $.ajax({
+        url: exportUrls[format],
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Accept": "application/json"
+        },
+        xhrFields: {
+            responseType: 'blob' // Ensures file download
+        },
+        success: function(response, status, xhr) {
+            let filename = xhr.getResponseHeader('Content-Disposition')?.split('filename=')[1] || `suppliers.${format}`;
+            let blob = new Blob([response], { type: xhr.getResponseHeader('Content-Type') });
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = filename.replace(/"/g, '');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        },
+        error: function(xhr) {
+            alert("Failed to export: " + xhr.responseText);
+        },
+        complete: function() {
+            setTimeout(() => {
+                let icons = { csv: "file-csv", excel: "file-excel", pdf: "file-pdf" };
+                button.html(`<i class="fas fa-${icons[format]} me-1"></i> ${format.toUpperCase()}`);
+            }, 1500);
+        }
+    });
+}
+
+$("#exportCSV").click(function(e) { e.preventDefault(); exportData('csv'); });
+$("#exportExcel").click(function(e) { e.preventDefault(); exportData('excel'); });
+$("#exportPDF").click(function(e) { e.preventDefault(); exportData('pdf'); });
+
         
         // Confirm delete button action
         $('#confirmDeleteButton').click(function() {

@@ -179,7 +179,11 @@
                     contact_number: { required: true, phoneValidation: true },
                     address: { required: true, minlength: 5 },
                     company_name: { required: true },
-                    gst_number: { required: true },
+                    gst_number: {
+                        required: true,
+                        minlength: 15,
+                        maxlength: 15
+                    },
                     website: { required: true, url: true },
                     state_id: { required: true },
                     city_id: { required: true },
@@ -195,7 +199,11 @@
                     contact_number: { required: "Contact number is required.", phoneValidation: "Enter a valid phone number format (e.g., +91 9876543210, 9876543210, 123-456-7890)." },
                     address: "Address must be at least 5 characters",
                     company_name: "Company name is required",
-                    gst_number: "GST number is required",
+                    gst_number: {
+                        required: "Please enter the gst number ",
+                        minlength: "Enter a valid GST Number (15 characters)",
+                        maxlength: "Enter a valid GST Number (15 characters)"
+                    },
                     website: "Enter a valid URL",
                     state_id: "Please select a state",
                     city_id: "Please select a city",
