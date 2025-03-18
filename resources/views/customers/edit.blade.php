@@ -63,6 +63,7 @@
                     <option value="Regular" {{ $customer->customer_type == 'Regular' ? 'selected' : '' }}>Regular</option>
                     <option value="VIP" {{ $customer->customer_type == 'VIP' ? 'selected' : '' }}>VIP</option>
                     <option value="Corporate" {{ $customer->customer_type == 'Corporate' ? 'selected' : '' }}>Corporate</option>
+                    <option value="Enterprise" {{ $customer->customer_type == 'Enterprise' ? 'selected' : '' }}>Enterprise</option>
                 </select>
             </div>
 
