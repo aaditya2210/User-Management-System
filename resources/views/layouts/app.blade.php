@@ -77,7 +77,7 @@
 
 <nav class="bg-gray-900 shadow-md px-2 py-2">
     <div class="container mx-auto flex justify-between items-center">
-        <a href="{{ url('/users') }}" class="text-xl font-semibold text-white">User Management System</a>
+        <a href="{{ url('/dashboard') }}" class="text-xl font-semibold text-white">User Management System</a>
 
         <div class="flex items-center space-x-5">
             @guest
@@ -88,7 +88,8 @@
                 </a>
             @else
                 <!-- Authenticated: Dashboard, Suppliers, Customers & Logout -->
-                <a href="{{ route('users.index') }}" class="text-gray-300 hover:text-white text-base font-medium">Dashboard</a>
+                {{-- <a href="{{ route('users.index') }}" class="text-gray-300 hover:text-white text-base font-medium">Dashboard</a> --}}
+                <a href="/dashboard" class="text-gray-300 hover:text-white text-base font-medium">Dashboard</a>
 
                 <a href="{{ route('suppliers.index') }}" class="border border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white text-base font-medium px-4 py-2 rounded-md transition duration-150 ease-in-out">
                     <i class="fas fa-box me-1"></i> Suppliers

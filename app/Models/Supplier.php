@@ -4,10 +4,45 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+
 
 class Supplier extends Model
 {
     use HasFactory;
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($supplier) {
+            Activity::create([
+                'user_id' => Auth::id(),
+                'activity' => "Added new supplier: $supplier->name",
+                'status' => 'Completed'
+            ]);
+        });
+
+        static::updated(function ($supplier) {
+            Activity::create([
+                'user_id' => Auth::id(),
+                'activity' => "Updated supplier: $supplier->name",
+                'status' => 'Completed'
+            ]);
+        });
+
+        static::deleted(function ($supplier) {
+            Activity::create([
+                'user_id' => Auth::id(),
+                'activity' => "Deleted supplier: $supplier->name",
+                'status' => 'Completed'
+            ]);
+        });
+    }
+
+
+
 
     protected $fillable = [
         'name', 

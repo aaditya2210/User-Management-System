@@ -12,6 +12,8 @@ use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Auth;
+
 
 
 
@@ -19,6 +21,44 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasRoles,HasApiTokens,HasFactory, Notifiable;
+
+
+
+
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            Activity::create([
+                'user_id' => Auth::id(), // Log who performed the action
+                'activity' => "Created new user: $user->first_name $user->last_name",
+                'status' => 'Completed'
+            ]);
+        });
+
+        static::updated(function ($user) {
+            Activity::create([
+                'user_id' => Auth::id(),
+                'activity' => "Updated user: $user->first_name $user->last_name",
+                'status' => 'Completed'
+            ]);
+        });
+
+        static::deleted(function ($user) {
+            Activity::create([
+                'user_id' => Auth::id(),
+                'activity' => "Deleted user: $user->first_name $user->last_name",
+                'status' => 'Completed'
+            ]);
+        });
+    }
+
+
+
+
 
     /**
      * The attributes that are mass assignable.

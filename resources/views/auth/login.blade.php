@@ -51,7 +51,8 @@
                     localStorage.setItem("access_token", response.access_token);
                     toastr.success("Login successful!");
                     setTimeout(() => {
-                        window.location.href = "/users";
+                        // window.location.href = "/users";
+                        window.location.href = "/dashboard";
                     }, 1500);
                 }
             },

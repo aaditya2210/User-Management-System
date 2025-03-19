@@ -9,6 +9,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerController;
+use Illuminate\Support\Facades\View;
 
 // Public routes
 Route::get('/', function () {
@@ -92,5 +93,22 @@ Route::middleware('allow.registration')->group(function () {
     
 });
 
+
+
+// Route::view('/dashboard', 'dashboard');
+use App\Http\Controllers\DashboardController;
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/activity', [DashboardController::class, 'fetchRecentActivity'])->name('dashboard.activity');
+Route::get('/users/list', [UserController::class, 'listUsers'])->name('users.list');
+// Route::get('/dashboard', [SupplierController::class, 'fetchSupplier'])->name('dashboard');
+
+
+use App\Http\Controllers\ChartController;
+
+Route::get('/charts', [ChartController::class, 'index'])->name('charts');
+Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data');
+
+// Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data'); // API for live data
 
 

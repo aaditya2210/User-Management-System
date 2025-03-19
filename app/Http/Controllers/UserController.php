@@ -342,4 +342,25 @@ class UserController extends Controller {
             return back()->withErrors(['error' => 'Something went wrong!']);
         }
     }
+
+
+
+    
+    public function listUsers()
+    {
+        $users = User::with('roles')->latest()->take(10)->get();
+
+        // Transform data to include role names
+        $usersArray = $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->first_name . ' ' . $user->last_name,
+                'roles' => $user->roles->pluck('name')->toArray(), // Extract role names
+                'status' => $user->status,
+            ];
+        });
+
+        return response()->json(['users' => $usersArray]);
+    }
+
 }
