@@ -174,13 +174,26 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="fas fa-shopping-cart"></i> Orders
+                    <a href="{{ url('/user-roles') }}">
+                        {{-- <i class="fas fa-shopping-cart"></i> Manage User Roles --}}
+                        <i class="fas fa-user-shield"></i> Manage User Roles
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('roles.index') }}">
+                        {{-- <i class="fas fa-box"></i> Define Roles --}}
+                        <i class="fas fa-users-cog"></i> Define Roles
                     </a>
                 </li>
                 <li>
                     <a href="#">
-                        <i class="fas fa-box"></i> Products
+                        {{-- <i class="fas fa-box"></i> Supplier Hub --}}
+                        <i class="fas fa-boxes"></i> Supplier Hub
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-box-open"></i> Product Explorer
                     </a>
                 </li>
                 <li>
@@ -453,7 +466,8 @@
                         <tbody>
                             @foreach($activities as $activity)
                                 <tr>
-                                    <td>{{ $activity->user->first_name }} {{ $activity->user->last_name }}</td>
+                                    {{-- <td>{{ $activity->user->first_name }} {{ $activity->user->last_name }}</td> --}}
+                                    <td>{{ $activity->user->first_name ?? 'Unknown' }} {{ $activity->user->last_name ?? 'User' }}</td>
                                     <td>{{ $activity->activity }}</td>
                                     <td><span class="badge bg-{{ $activity->status == 'Completed' ? 'success' : ($activity->status == 'Pending' ? 'warning' : 'danger') }}">{{ $activity->status }}</span></td>
                                     <td>{{ $activity->created_at->diffForHumans() }}</td>
