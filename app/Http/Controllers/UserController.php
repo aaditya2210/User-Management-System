@@ -363,4 +363,25 @@ class UserController extends Controller {
         return response()->json(['users' => $usersArray]);
     }
 
+
+
+
+
+
+    public function profile()
+    {
+        try {
+            $user = User::with(['city', 'state', 'roles'])->find(Auth::id()); // Load related data
+    
+            if (!$user) {
+                return back()->withErrors(['error' => 'User not found!']);
+            }
+    
+            return view('profile', compact('user'));
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Something went wrong!']);
+        }
+    }
+    
+
 }

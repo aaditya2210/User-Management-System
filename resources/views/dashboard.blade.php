@@ -115,42 +115,13 @@
                     <a href="{{ route('users.index') }}" class="nav-link">
                         <i class="fas fa-users"></i> Manage Users
                     </a>
-                    
-                    {{-- <a href="#userSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fas fa-users"></i> Manage Users
-                    </a> --}}
-                    {{-- <ul class="collapse list-unstyled ps-4" id="userSubmenu">
-                        <li>
-                            <a href="{{ route('users.index') }}"><i class="fas fa-user-plus"></i> Add User</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fas fa-user-edit"></i> Edit User</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fas fa-user-minus"></i> Delete User</a>
-                        </li> --}}
-                    {{-- </ul> --}}
+        
                 </li>
                 <li>
 
                     <a href="{{ route('customers.index') }}" class="nav-link">
                         <i class="fas fa-user-tie"></i> Manage Customers
                     </a>
-                    
-                    {{-- <a href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fas fa-user-tie"></i> Manage Customers
-                    </a> --}}
-                    {{-- <ul class="collapse list-unstyled ps-4" id="customerSubmenu">
-                        <li>
-                            <a href="#"><i class="fas fa-plus-circle"></i> Add Customer</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fas fa-edit"></i> Edit Customer</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fas fa-trash-alt"></i> Delete Customer</a>
-                        </li>
-                    </ul> --}}
                 </li>
                 <li>
 
@@ -158,9 +129,6 @@
                         <i class="fas fa-truck"></i> Manage Suppliers
                     </a>
                     
-                    {{-- <a href="#supplierSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fas fa-truck"></i> Manage Suppliers
-                    </a> --}}
                     <ul class="collapse list-unstyled ps-4" id="supplierSubmenu">
                         <li>
                             <a href="#"><i class="fas fa-plus-circle"></i> Add Supplier</a>
@@ -230,12 +198,35 @@
                         <div class="dropdown">
                             <button class="btn dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
                                 <div class="bg-primary rounded-circle text-white d-flex justify-content-center align-items-center me-2" style="width: 35px; height: 35px;">
-                                    <span>JD</span>
+                                    <span>{{ Auth::user()->first_name[0] ?? 'U' }}</span>
                                 </div>
-                                <span>John Doe</span>
+                                <div class="d-flex align-items-center">
+                                    <span class="fw-medium me-2">{{ Auth::user()->first_name ?? 'User' }}</span>
+                                    @if(Auth::user()->getRoleNames()->isNotEmpty())
+                                        @php
+                                            $roleName = Auth::user()->getRoleNames()->first();
+                                            $roleColorClass = match(strtolower($roleName)) {
+                                                'admin' => 'bg-danger',
+                                                'customer_manager' => 'bg-warning text-dark',
+                                                'supplier_manager' => 'bg-info',
+                                                'editor' => 'bg-success',
+                                                default => 'bg-secondary'
+                                            };
+                                        @endphp
+                                        <span class="badge {{ $roleColorClass }} rounded-pill px-2 d-inline-flex align-items-center" style="font-size: 0.7rem; line-height: 1.2;">
+                                            <i class="fas fa-user-shield me-1" style="font-size: 0.65rem;"></i>
+                                            {{ $roleName }}
+                                        </span>
+                                    @else
+                                        <span class="badge bg-light text-secondary rounded-pill px-2 d-inline-flex align-items-center" style="font-size: 0.7rem; line-height: 1.2;">
+                                            <i class="fas fa-user me-1" style="font-size: 0.65rem;"></i>
+                                            User
+                                        </span>
+                                    @endif
+                                </div>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <form action="{{ route('logout') }}" method="POST">

@@ -105,6 +105,7 @@ Route::get('/users/list', [UserController::class, 'listUsers'])->name('users.lis
 
 
 use App\Http\Controllers\ChartController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/charts', [ChartController::class, 'index'])->name('charts');
 Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data');
@@ -112,3 +113,4 @@ Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart
 // Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data'); // API for live data
 
 
+Route::get('/profile', [UserController::class, 'profile'])->name('profile')->middleware('auth');
