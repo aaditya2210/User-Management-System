@@ -109,6 +109,9 @@ use App\Http\Controllers\ProfileController;
 
 Route::get('/charts', [ChartController::class, 'index'])->name('charts');
 Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data');
+Route::get('/charts/users-location', [ChartController::class, 'getUsersLocationData'])->name('charts.users.location');
+Route::get('/charts/suppliers-location', [ChartController::class, 'getSuppliersLocationData'])->name('charts.suppliers.location');
+Route::get('/charts/customers-location', [ChartController::class, 'getCustomersLocationData'])->name('charts.customers.location');
 
 // Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data'); // API for live data
 

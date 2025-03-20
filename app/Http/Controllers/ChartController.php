@@ -105,4 +105,82 @@ class ChartController extends Controller
             'activityData' => $activityData,
         ]);
     }
+
+
+
+
+
+
+    public function getUsersLocationData()
+{
+    try {
+        $users = User::with(['city', 'state'])->get(['id', 'first_name', 'last_name', 'state_id', 'city_id']);
+
+        // Prepare data for Google Charts
+        $locationData = [];
+        foreach ($users as $user) {
+            if ($user->state && $user->city) {
+                $locationData[] = [
+                    'location' => $user->state->name, // Google Charts recognizes state names
+                    'city' => $user->city->name,
+                    'user' => $user->first_name . ' ' . $user->last_name
+                ];
+            }
+        }
+
+        return response()->json(['success' => true, 'data' => $locationData]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Error fetching data!']);
+    }
+}
+
+
+
+
+public function getSuppliersLocationData()
+{
+    try {
+        $suppliers = Supplier::with(['city', 'state'])->get(['id', 'name', 'state_id', 'city_id']);
+
+        // Prepare data for Google Charts
+        $locationData = [];
+        foreach ($suppliers as $supplier) {
+            if ($supplier->state && $supplier->city) {
+                $locationData[] = [
+                    'location' => $supplier->state->name, // Google Charts recognizes state names
+                    'city' => $supplier->city->name,
+                    'supplier' => $supplier->name
+                ];
+            }
+        }
+
+        return response()->json(['success' => true, 'data' => $locationData]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Error fetching supplier data!']);
+    }
+}
+
+
+public function getCustomersLocationData()
+{
+    try {
+        $customers = Customer::get(['id', 'name', 'nationality']);
+
+        // Prepare data for Google Charts
+        $locationData = [];
+        foreach ($customers as $customer) {
+            if (!empty($customer->nationality)) {
+                $locationData[] = [
+                    'location' => $customer->nationality, // Google Charts recognizes country names
+                    'customer' => $customer->name
+                ];
+            }
+        }
+
+        return response()->json(['success' => true, 'data' => $locationData]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Error fetching customer data!']);
+    }
+}
+
 }

@@ -4,7 +4,9 @@
 <div class="container-fluid px-4 py-5">
     <div class="row mb-4">
         <div class="col-12">
-            <h2 class="fw-bold text-primary border-bottom pb-3"> Analytics Dashboard</h2>
+            {{-- <h2 class="fw-bold text-primary border-bottom pb-3"> Analytics Dashboard</h2> --}}
+            <h2 class="fw-bold text-primary border-bottom pb-3 display-6">Analytics Dashboard</h2>
+
         </div>
     </div>
 
@@ -178,6 +180,49 @@
         </div>
     </div>
 
+    {{-- <div class="container">
+        <h2>User Distribution Map (India)</h2>
+        <div id="map_div" style="width: 100%; height: 500px;"></div>
+    </div> --}}
+
+    {{-- <div class="container">
+        <h2>Distribution Map (Users & Suppliers in India)</h2>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Users Location</h4>
+                <div id="users_map_div" style="width: 100%; height: 400px;"></div>
+            </div>
+            <div class="col-md-6">
+                <h4>Suppliers Location</h4>
+                <div id="suppliers_map_div" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+    </div> --}}
+
+
+    <div class="container">
+        <h2>Distribution Map (Users, Suppliers & Customers)</h2>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Users Location (India Map)</h4>
+                <div id="users_map_div" style="width: 100%; height: 400px;"></div>
+            </div>
+            <div class="col-md-6">
+                <h4>Suppliers Location (India Map)</h4>
+                <div id="suppliers_map_div" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+    
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h4>Customers Location (World Map)</h4>
+                <div id="customers_map_div" style="width: 100%; height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Last Updated Section -->
     <div class="row mt-2">
         <div class="col-12">
@@ -201,6 +246,116 @@
     google.charts.load('current', {packages:['corechart', 'bar']});
     
     document.addEventListener("DOMContentLoaded", function() {
+        google.charts.load('current', { 'packages': ['geochart'] });
+        google.charts.setOnLoadCallback(drawUsersMap);
+        google.charts.setOnLoadCallback(drawSuppliersMap);
+        google.charts.setOnLoadCallback(drawCustomersMap);
+
+        function drawUsersMap() {
+            fetch("{{ route('charts.users.location') }}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let chartData = [['State', 'User Count']];
+                        let stateCount = {};
+
+                        data.data.forEach(user => {
+                            stateCount[user.location] = (stateCount[user.location] || 0) + 1;
+                        });
+
+                        Object.entries(stateCount).forEach(([state, count]) => {
+                            chartData.push([state, count]);
+                        });
+
+                        var dataTable = google.visualization.arrayToDataTable(chartData);
+
+                        var options = {
+                            region: 'IN',
+                            resolution: 'provinces',
+                            colorAxis: { colors: ['#e0f7fa', '#00796b'] },
+                            backgroundColor: '#ffffff',
+                            datalessRegionColor: '#f5f5f5',
+                            defaultColor: '#6c757d'
+                        };
+
+                        var chart = new google.visualization.GeoChart(document.getElementById('users_map_div'));
+                        chart.draw(dataTable, options);
+                    } else {
+                        console.error("Failed to load user location data.");
+                    }
+                })
+                .catch(error => console.error("Error fetching user location data:", error));
+        }
+
+        function drawSuppliersMap() {
+            fetch("{{ route('charts.suppliers.location') }}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let chartData = [['State', 'Supplier Count']];
+                        let stateCount = {};
+
+                        data.data.forEach(supplier => {
+                            stateCount[supplier.location] = (stateCount[supplier.location] || 0) + 1;
+                        });
+
+                        Object.entries(stateCount).forEach(([state, count]) => {
+                            chartData.push([state, count]);
+                        });
+
+                        var dataTable = google.visualization.arrayToDataTable(chartData);
+
+                        var options = {
+                            region: 'IN',
+                            resolution: 'provinces',
+                            colorAxis: { colors: ['#ffccbc', '#d84315'] },
+                            backgroundColor: '#ffffff',
+                            datalessRegionColor: '#f5f5f5',
+                            defaultColor: '#6c757d'
+                        };
+
+                        var chart = new google.visualization.GeoChart(document.getElementById('suppliers_map_div'));
+                        chart.draw(dataTable, options);
+                    } else {
+                        console.error("Failed to load supplier location data.");
+                    }
+                })
+                .catch(error => console.error("Error fetching supplier location data:", error));
+        }
+
+        function drawCustomersMap() {
+            fetch("{{ route('charts.customers.location') }}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let chartData = [['Country', 'Customer Count']];
+                        let countryCount = {};
+
+                        data.data.forEach(customer => {
+                            countryCount[customer.location] = (countryCount[customer.location] || 0) + 1;
+                        });
+
+                        Object.entries(countryCount).forEach(([country, count]) => {
+                            chartData.push([country, count]);
+                        });
+
+                        var dataTable = google.visualization.arrayToDataTable(chartData);
+
+                        var options = {
+                            colorAxis: { colors: ['#f3e5f5', '#8e24aa'] },
+                            backgroundColor: '#ffffff',
+                            datalessRegionColor: '#f5f5f5',
+                            defaultColor: '#6c757d'
+                        };
+
+                        var chart = new google.visualization.GeoChart(document.getElementById('customers_map_div'));
+                        chart.draw(dataTable, options);
+                    } else {
+                        console.error("Failed to load customer location data.");
+                    }
+                })
+                .catch(error => console.error("Error fetching customer location data:", error));
+        }
         fetchChartData();
     });
 
@@ -418,7 +573,13 @@
             var nationalityChart = new google.visualization.BarChart(document.getElementById('nationalityChart'));
             nationalityChart.draw(google.visualization.arrayToDataTable(nationalityData), nationalityOptions);
         });
+
+        // ------------------------------------------------------------------------------------------------
+        
     }
+
+
+    
 
     // Auto-refresh every 3 minutes (180000 milliseconds)
     setInterval(fetchChartData, 180000);
