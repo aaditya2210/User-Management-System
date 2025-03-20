@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerController;
@@ -34,7 +36,26 @@ Route::middleware('allow.registration')->group(function () {
 // Protected routes (only for authenticated users)
 // Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['auth', 'prevent-back-history']], function () {
-    // User Management
+        // Route::view('/dashboard', 'dashboard');
+        
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/activity', [DashboardController::class, 'fetchRecentActivity'])->name('dashboard.activity');
+        Route::get('/users/list', [UserController::class, 'listUsers'])->name('users.list');
+        // Route::get('/dashboard', [SupplierController::class, 'fetchSupplier'])->name('dashboard');
+        
+        
+        
+        
+        Route::get('/charts', [ChartController::class, 'index'])->name('charts');
+        Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data');
+        Route::get('/charts/users-location', [ChartController::class, 'getUsersLocationData'])->name('charts.users.location');
+        Route::get('/charts/suppliers-location', [ChartController::class, 'getSuppliersLocationData'])->name('charts.suppliers.location');
+        Route::get('/charts/customers-location', [ChartController::class, 'getCustomersLocationData'])->name('charts.customers.location');
+        
+        // Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data'); // API for live data
+        Route::get('/profile', [UserController::class, 'profile'])->name('profile')->middleware('auth');
+   
+        // User Management
     Route::resource('users', UserController::class);
     Route::get('/users/export/csv', [UserController::class, 'exportCsv'])->name('users.export.csv');
     Route::get('/users/export/excel', [UserController::class, 'exportExcel'])->name('users.export.excel');
@@ -95,25 +116,3 @@ Route::middleware('allow.registration')->group(function () {
 
 
 
-// Route::view('/dashboard', 'dashboard');
-use App\Http\Controllers\DashboardController;
-
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard/activity', [DashboardController::class, 'fetchRecentActivity'])->name('dashboard.activity');
-Route::get('/users/list', [UserController::class, 'listUsers'])->name('users.list');
-// Route::get('/dashboard', [SupplierController::class, 'fetchSupplier'])->name('dashboard');
-
-
-use App\Http\Controllers\ChartController;
-use App\Http\Controllers\ProfileController;
-
-Route::get('/charts', [ChartController::class, 'index'])->name('charts');
-Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data');
-Route::get('/charts/users-location', [ChartController::class, 'getUsersLocationData'])->name('charts.users.location');
-Route::get('/charts/suppliers-location', [ChartController::class, 'getSuppliersLocationData'])->name('charts.suppliers.location');
-Route::get('/charts/customers-location', [ChartController::class, 'getCustomersLocationData'])->name('charts.customers.location');
-
-// Route::get('/chart-data', [ChartController::class, 'getChartData'])->name('chart.data'); // API for live data
-
-
-Route::get('/profile', [UserController::class, 'profile'])->name('profile')->middleware('auth');
