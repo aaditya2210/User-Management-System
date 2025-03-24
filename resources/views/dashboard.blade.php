@@ -644,6 +644,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="usersTable">
+                                        {{-- @php dd($users[0]->first_name); @endphp --}}
                                         @foreach ($users as $user)
                                             <tr>
                                                 <td>{{ $user->first_name }} {{ $user->last_name }}</td>
@@ -756,39 +757,94 @@
 
 
 
+    // function fetchUsers() {
+    //     $.ajax({
+    //         url: "{{ route('users.list') }}",
+    //         type: "GET",
+    //         success: function(response) {
+    //             let usersTable = '';
+    //             response.users.forEach(user => {
+    //                 let roleBadges = user.roles.map(role => `<span class="badge bg-info">${role}</span>`).join(' ');
+
+    //                 usersTable += `
+    //                     <tr>
+    //                         <td>${user.first_name} ${user.last_name}</td>
+    //                         <td>${user.email}</td>
+    //                         <td>${user.contact_number}</td>
+    //                         <td>${user.state ? user.state.name : ''}, ${user.city ? user.city.name : ''}</td>
+    //                         <td>${roleBadges}</td>
+    //                         <td>${new Date(user.created_at).toLocaleDateString()}</td>
+    //                         <td>
+    //                             <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
+    //                             <button class="btn btn-sm btn-outline-danger deleteUser" data-id="${user.id}">
+    //                                 <i class="fas fa-trash"></i>
+    //                             </button>
+    //                         </td>
+    //                     </tr>
+    //                 `;
+    //             });
+    //             $('#usersTable').html(usersTable);
+    //         }
+    //     });
+    // }
+
+    // setInterval(fetchUsers, 5000);
+    // $(document).ready(fetchUsers);
+
+
+
     function fetchUsers() {
-        $.ajax({
-            url: "{{ route('users.list') }}",
-            type: "GET",
-            success: function(response) {
-                let usersTable = '';
-                response.users.forEach(user => {
-                    let roleBadges = user.roles.map(role => `<span class="badge bg-info">${role}</span>`).join(' ');
-
-                    usersTable += `
-                        <tr>
-                            <td>${user.first_name} ${user.last_name}</td>
-                            <td>${user.email}</td>
-                            <td>${user.contact_number}</td>
-                            <td>${user.state ? user.state.name : ''}, ${user.city ? user.city.name : ''}</td>
-                            <td>${roleBadges}</td>
-                            <td>${new Date(user.created_at).toLocaleDateString()}</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-sm btn-outline-danger deleteUser" data-id="${user.id}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                $('#usersTable').html(usersTable);
+    $.ajax({
+        url: @json(route('users.list')),
+        type: "GET",
+        success: function(response) {
+            if (!response.users || response.users.length === 0) {
+                $('#usersTable').html('<tr><td colspan="7" class="text-center">No users found</td></tr>');
+                return;
             }
-        });
-    }
 
-    setInterval(fetchUsers, 5000);
-    $(document).ready(fetchUsers);
+            let usersTable = '';
+            response.users.forEach(user => {
+                let roleBadges = user.roles.map(role => `<span class="badge bg-info">${role.name}</span>`).join(' ');
+
+                const formattedDate = new Intl.DateTimeFormat('en-US', {
+                    day: '2-digit', month: 'short', year: 'numeric'
+                }).format(new Date(user.created_at));
+
+                usersTable += `
+                    <tr>
+                        <td>${user.first_name} ${user.last_name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.contact_number}</td>
+                        <td>${user.state ? user.state.name : ''}, ${user.city ? user.city.name : ''}</td>
+                        <td>${roleBadges}</td>
+                        <td>${formattedDate}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-danger deleteUser" data-id="${user.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            $('#usersTable').html(usersTable);
+        },
+        error: function(xhr) {
+            console.error("Error fetching users:", xhr.responseText);
+        }
+    });
+}
+
+// Only refresh when page is active
+setInterval(() => {
+    if (document.visibilityState === 'visible') {
+        fetchUsers();
+    }
+}, 5000);
+
+$(document).ready(fetchUsers);
+
 // ---------------------------------------------
 
 

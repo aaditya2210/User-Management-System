@@ -107,7 +107,7 @@
     @auth
     <!-- Only show this content if user is authenticated -->
     <div class="wrapper">
-        <!-- Sidebar -->
+        {{-- <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3 class="fs-5">Admin Dashboard</h3>
@@ -177,7 +177,80 @@
                     </a>
                 </li>
             </ul>
-        </nav>
+        </nav> --}}
+
+
+        <!-- Sidebar -->
+<nav id="sidebar">
+    <div class="sidebar-header">
+        <h3 class="fs-5">Admin Dashboard</h3>
+    </div>
+
+    <ul class="list-unstyled components">
+        <li>
+            <a href="/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.index') ? 'active' : '' }}">
+                <i class="fas fa-users"></i> Manage Users
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('customers.index') }}" class="{{ request()->routeIs('customers.index') ? 'active' : '' }}">
+                <i class="fas fa-user-tie"></i> Manage Customers
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('suppliers.index') }}" class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
+                <i class="fas fa-truck"></i> Manage Suppliers
+            </a>
+            
+            <ul class="collapse list-unstyled ps-4" id="supplierSubmenu">
+                <li>
+                    <a href="#"><i class="fas fa-plus-circle"></i> Add Supplier</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-edit"></i> Edit Supplier</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-trash-alt"></i> Delete Supplier</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="{{ url('/user-roles') }}" class="{{ request()->is('user-roles') ? 'active' : '' }}">
+                <i class="fas fa-user-shield"></i> Manage User Roles
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.index') ? 'active' : '' }}">
+                <i class="fas fa-users-cog"></i> Define Roles
+            </a>
+        </li>
+        <li>
+            <a href="#" class="{{ request()->is('supplier-hub*') ? 'active' : '' }}">
+                <i class="fas fa-boxes"></i> Supplier Hub
+            </a>
+        </li>
+        <li>
+            <a href="#" class="{{ request()->is('products*') ? 'active' : '' }}">
+                <i class="fas fa-box-open"></i> Product Explorer
+            </a>
+        </li>
+        <li>
+            <a href="/charts" class="{{ request()->is('charts') ? 'active' : '' }}">
+                <i class="fas fa-chart-bar"></i> Analytics
+            </a>
+        </li>
+        <li>
+            <a href="#" class="{{ request()->is('settings*') ? 'active' : '' }}">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </li>
+    </ul>
+</nav>
 
         <!-- Page Content -->
         <div id="content">
