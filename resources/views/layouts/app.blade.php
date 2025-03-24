@@ -15,10 +15,15 @@
         #sidebar {
             min-width: 250px;
             max-width: 250px;
-            min-height: 100vh;
+            height: 100vh;
             background-color: #343a40;
             color: #fff;
             transition: all 0.3s;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            overflow-y: auto;
         }
         
         #sidebar.active {
@@ -63,6 +68,28 @@
             width: 100%;
             min-height: 100vh;
             transition: all 0.3s;
+            margin-left: 250px; /* Same as sidebar width */
+        }
+        
+        #content.active {
+            margin-left: 0;
+        }
+        
+        .topbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 250px; /* Same as sidebar width */
+            z-index: 998;
+            transition: all 0.3s;
+        }
+        
+        .topbar.active {
+            left: 0;
+        }
+        
+        .main-content {
+            padding-top: 70px; /* Height of topbar plus some spacing */
         }
         
         .dashboard-card {
@@ -88,6 +115,18 @@
             #sidebar.active {
                 margin-left: 0;
             }
+            #content {
+                margin-left: 0;
+            }
+            #content.active {
+                margin-left: 250px;
+            }
+            .topbar {
+                left: 0;
+            }
+            .topbar.active {
+                left: 250px;
+            }
             #sidebarCollapse span {
                 display: none;
             }
@@ -107,7 +146,7 @@
     @auth
     <!-- Only show this content if user is authenticated -->
     <div class="wrapper">
-        {{-- <!-- Sidebar -->
+        <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3 class="fs-5">Admin Dashboard</h3>
@@ -115,22 +154,22 @@
 
             <ul class="list-unstyled components">
                 <li>
-                    <a href="/dashboard" class="active">
+                    <a href="/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}">
                         <i class="fas fa-home"></i> Dashboard
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('users.index') }}" class="nav-link">
+                    <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.index') ? 'active' : '' }}">
                         <i class="fas fa-users"></i> Manage Users
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('customers.index') }}" class="nav-link">
+                    <a href="{{ route('customers.index') }}" class="{{ request()->routeIs('customers.index') ? 'active' : '' }}">
                         <i class="fas fa-user-tie"></i> Manage Customers
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('suppliers.index') }}" class="nav-link">
+                    <a href="{{ route('suppliers.index') }}" class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
                         <i class="fas fa-truck"></i> Manage Suppliers
                     </a>
                     
@@ -147,115 +186,42 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="{{ url('/user-roles') }}">
+                    <a href="{{ url('/user-roles') }}" class="{{ request()->is('user-roles') ? 'active' : '' }}">
                         <i class="fas fa-user-shield"></i> Manage User Roles
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('roles.index') }}">
+                    <a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.index') ? 'active' : '' }}">
                         <i class="fas fa-users-cog"></i> Define Roles
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="#" class="{{ request()->is('supplier-hub*') ? 'active' : '' }}">
                         <i class="fas fa-boxes"></i> Supplier Hub
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="#" class="{{ request()->is('products*') ? 'active' : '' }}">
                         <i class="fas fa-box-open"></i> Product Explorer
                     </a>
                 </li>
                 <li>
-                    <a href="/charts">
+                    <a href="/charts" class="{{ request()->is('charts') ? 'active' : '' }}">
                         <i class="fas fa-chart-bar"></i> Analytics
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="#" class="{{ request()->is('settings*') ? 'active' : '' }}">
                         <i class="fas fa-cog"></i> Settings
                     </a>
                 </li>
             </ul>
-        </nav> --}}
-
-
-        <!-- Sidebar -->
-<nav id="sidebar">
-    <div class="sidebar-header">
-        <h3 class="fs-5">Admin Dashboard</h3>
-    </div>
-
-    <ul class="list-unstyled components">
-        <li>
-            <a href="/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}">
-                <i class="fas fa-home"></i> Dashboard
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.index') ? 'active' : '' }}">
-                <i class="fas fa-users"></i> Manage Users
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('customers.index') }}" class="{{ request()->routeIs('customers.index') ? 'active' : '' }}">
-                <i class="fas fa-user-tie"></i> Manage Customers
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('suppliers.index') }}" class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
-                <i class="fas fa-truck"></i> Manage Suppliers
-            </a>
-            
-            <ul class="collapse list-unstyled ps-4" id="supplierSubmenu">
-                <li>
-                    <a href="#"><i class="fas fa-plus-circle"></i> Add Supplier</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fas fa-edit"></i> Edit Supplier</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fas fa-trash-alt"></i> Delete Supplier</a>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <a href="{{ url('/user-roles') }}" class="{{ request()->is('user-roles') ? 'active' : '' }}">
-                <i class="fas fa-user-shield"></i> Manage User Roles
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.index') ? 'active' : '' }}">
-                <i class="fas fa-users-cog"></i> Define Roles
-            </a>
-        </li>
-        <li>
-            <a href="#" class="{{ request()->is('supplier-hub*') ? 'active' : '' }}">
-                <i class="fas fa-boxes"></i> Supplier Hub
-            </a>
-        </li>
-        <li>
-            <a href="#" class="{{ request()->is('products*') ? 'active' : '' }}">
-                <i class="fas fa-box-open"></i> Product Explorer
-            </a>
-        </li>
-        <li>
-            <a href="/charts" class="{{ request()->is('charts') ? 'active' : '' }}">
-                <i class="fas fa-chart-bar"></i> Analytics
-            </a>
-        </li>
-        <li>
-            <a href="#" class="{{ request()->is('settings*') ? 'active' : '' }}">
-                <i class="fas fa-cog"></i> Settings
-            </a>
-        </li>
-    </ul>
-</nav>
+        </nav>
 
         <!-- Page Content -->
         <div id="content">
             <!-- Topbar -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm topbar">
                 <div class="container-fluid">
                     <button type="button" id="sidebarCollapse" class="btn btn-dark">
                         <i class="fas fa-bars"></i>
@@ -292,23 +258,18 @@
                                     @endif
                                 </div>
                             </button>
-                            {{-- <button class="btn dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
-                                <div class="bg-primary rounded-circle text-white d-flex justify-content-center align-items-center me-2" style="width: 35px; height: 35px;">
-                                    <span>{{ Auth::user()->first_name[0] ?? 'U' }}</span>
-                                </div>
-                                <span>{{ Auth::user()->first_name ?? 'User' }}</span>
-                                <small class="text-muted">{{ Auth::user()->getRoleNames()->first() ?? 'User' }}</small>
-                            </button> --}}
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
-                                    </button>
-                                </form>
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST" class="px-4 py-2">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm w-100">
+                                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                        </button>
+                                    </form>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -316,7 +277,7 @@
             </nav>
 
             <!-- Main Content -->
-            <div class="container mt-4">
+            <div class="container main-content">
                 @yield('content')
             </div>
         </div>
@@ -325,7 +286,7 @@
     <!-- Only show this content if user is NOT authenticated (login/register pages) -->
     <div>
         <!-- Simple Navbar for Login/Register -->
-        <nav class="bg-gray-900 shadow-md px-2 py-2">
+        <nav class="bg-gray-900 shadow-md px-2 py-2 fixed top-0 left-0 right-0 z-50">
             <div class="container mx-auto flex justify-between items-center">
                 <a href="{{ url('/') }}" class="text-xl font-semibold text-white">User Management System</a>
 
@@ -339,7 +300,7 @@
         </nav>
 
         <!-- Main Content for Login/Register Pages -->
-        <div class="container mt-4">
+        <div class="container mt-20">
             @yield('content')
         </div>
     </div>
@@ -350,6 +311,8 @@
         $(document).ready(function () {
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
+                $('#content').toggleClass('active');
+                $('.topbar').toggleClass('active');
             });
         });
     </script>

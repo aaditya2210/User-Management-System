@@ -494,21 +494,21 @@
                             </div>
                             <div class="card-body">
                                 <div class="list-group">
-                                    <a href="#" class="list-group-item list-group-item-action">
+                                    <a href="{{ route('users.create') }}" class="list-group-item list-group-item-action">
                                         <i class="fas fa-user-plus me-2 text-primary"></i> Add New User
                                     </a>
-                                    <a href="#" class="list-group-item list-group-item-action">
+                                    <a href="{{ route('customers.create') }}" class="list-group-item list-group-item-action">
                                         <i class="fas fa-user-tie me-2 text-success"></i> Add New Customer
                                     </a>
-                                    <a href="#" class="list-group-item list-group-item-action">
+                                    <a href="{{ route('suppliers.create') }}" class="list-group-item list-group-item-action">
                                         <i class="fas fa-truck me-2 text-warning"></i> Add New Supplier
                                     </a>
-                                    <a href="#" class="list-group-item list-group-item-action">
+                                    {{-- <a href="#" class="list-group-item list-group-item-action">
                                         <i class="fas fa-box me-2 text-info"></i> Add New Product
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action">
+                                    </a> --}}
+                                    {{-- <a href="#" class="list-group-item list-group-item-action">
                                         <i class="fas fa-file-invoice me-2 text-danger"></i> Create Invoice
-                                    </a>
+                                    </a> --}}
                                 </div>
                             </div>
                         </div>
@@ -576,7 +576,7 @@
                             <div class="card dashboard-card h-100">
                                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">Users Overview</h5>
-                                    <a href="{{ route('users.index') }}" class="btn btn-sm btn-primary">View All</a>
+                                    <a href="') }}" class="btn btn-sm btn-primary">View All</a>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -584,7 +584,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
-                                                    <th>Email</th>
+                                                    <th>Email</th>{{ route('users.index
                                                     <th>Contact Number</th>
                                                     <th>Location</th>
                                                     <th>Role</th>
@@ -640,7 +640,7 @@
                                             <th>Location</th>
                                             <th>Role</th>
                                             <th>Created At</th>
-                                            <th>Actions</th>
+                                            {{-- <th>Actions</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody id="usersTable">
@@ -657,12 +657,12 @@
                                                     @endforeach
                                                 </td>
                                                 <td>{{ $user->created_at->format('d M Y') }}</td>
-                                                <td>
+                                                {{-- <td>
                                                     <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
                                                     <button class="btn btn-sm btn-outline-danger deleteUser" data-id="{{ $user->id }}">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
-                                                </td>
+                                                </td> --}}
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -694,7 +694,7 @@
                                                 <th>City</th> --}}
                                                 <th>Status</th>
                                                 <th>Created At</th>
-                                                <th>Actions</th>
+                                                {{-- <th>Actions</th> --}}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -715,10 +715,10 @@
                                                         </span>
                                                     </td>
                                                     <td>{{ \Carbon\Carbon::parse($supplier->created_at)->format('d M Y') }}</td>
-                                                    <td>
+                                                    {{-- <td>
                                                         <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></button>
                                                         <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                             @endforeach
                                         </tbody>

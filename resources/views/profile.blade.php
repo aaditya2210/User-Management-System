@@ -124,7 +124,7 @@
                     </div>
                 </div>
                 
-                <!-- Hobbies -->
+                {{-- <!-- Hobbies -->
                 <div class="mt-6 bg-gray-50 p-4 rounded-lg">
                     <div class="flex items-center mb-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -142,8 +142,32 @@
                         @endif
                     </div>
                 </div>
-            </div>
+            </div> --}}
             
+<!-- Hobbies -->
+<div class="mt-6 bg-gray-50 p-4 rounded-lg">
+    <div class="flex items-center mb-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h5 class="text-sm font-medium text-gray-500 ml-2">Hobbies</h5>
+    </div>
+    <div>
+        @if(!empty($user->hobbies))
+            @foreach(json_decode($user->hobbies, true) ?? [] as $hobby)
+                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded mr-2 mb-1 inline-block">
+                    {{ trim($hobby) }}
+                </span>
+            @endforeach
+        @else
+            <p class="text-gray-800 font-medium">No hobbies listed</p>
+        @endif
+    </div>
+</div>
+
+
+
+
             <!-- Actions -->
             <div class="px-8 py-6 bg-gray-50 border-t">
                 <div class="flex justify-between items-center">
