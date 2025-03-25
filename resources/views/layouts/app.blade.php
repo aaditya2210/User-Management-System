@@ -219,7 +219,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="{{ request()->is('products*') ? 'active' : '' }}">
+                    <a href="/products" class="{{ request()->is('products*') ? 'active' : '' }}">
                         <i class="fas fa-box-open"></i> Product Explorer
                     </a>
                 </li>

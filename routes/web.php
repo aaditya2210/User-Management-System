@@ -116,3 +116,8 @@ Route::middleware('allow.registration')->group(function () {
 
 
 
+
+
+use App\Http\Controllers\ProductController;
+
+Route::get('/products', [ProductController::class, 'explorer']);

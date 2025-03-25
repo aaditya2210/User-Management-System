@@ -175,7 +175,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="/products">
                         <i class="fas fa-box-open"></i> Product Explorer
                     </a>
                 </li>
