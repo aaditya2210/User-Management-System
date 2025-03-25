@@ -12,6 +12,7 @@ use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\View;
+use App\Http\Controllers\CustomerDashboardController;
 
 // Public routes
 Route::get('/', function () {
@@ -42,7 +43,7 @@ Route::middleware('allow.registration')->group(function () {
         Route::get('/dashboard/activity', [DashboardController::class, 'fetchRecentActivity'])->name('dashboard.activity');
         Route::get('/users/list', [UserController::class, 'listUsers'])->name('users.list');
         // Route::get('/dashboard', [SupplierController::class, 'fetchSupplier'])->name('dashboard');
-        
+        Route::get('/customer-dashboard', [CustomerDashboardController::class, 'dashboard'])->name('customer_dashboard');        
         
         
         
