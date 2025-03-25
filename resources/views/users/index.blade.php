@@ -83,7 +83,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0 text-dark">User Database</h5>
                 <div class="btn-group">
-                    @can('create-users')
+                    @can(abilities: 'create-users')
                     {{-- @role('admin') --}}
                         <a href="{{ route('users.create') }}" class="btn btn-primary">
                             <i class="fas fa-user-plus me-1"></i> Add User

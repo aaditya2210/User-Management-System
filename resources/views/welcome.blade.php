@@ -217,9 +217,9 @@
                     <p>Fast, responsive interfaces with asynchronous data loading that eliminates page refreshes and enhances user experience.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3>Responsive Design</h3>
-                    <p>Access and manage your system from any device with our mobile-friendly interface that adapts to all screen sizes.</p>
+                    <div class="feature-icon">📊</div>
+                    <h3>Interactive Dashboard</h3>
+                    <p>Get insights with real-time statistics on user activity, new signups, and active users.</p>
                 </div>
             </div>
         </div>

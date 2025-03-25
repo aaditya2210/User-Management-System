@@ -148,9 +148,21 @@
     <div class="wrapper">
         <!-- Sidebar -->
         <nav id="sidebar">
+            @role('admin')
             <div class="sidebar-header">
                 <h3 class="fs-5">Admin Dashboard</h3>
             </div>
+            @endrole
+            @role('supplier_manager')
+            <div class="sidebar-header">
+                <h3 class="fs-5">Supplier Dashboard</h3>
+            </div>
+            @endrole
+            @role('customer_manager')
+            <div class="sidebar-header">
+                <h3 class="fs-5">Customer Dashboard</h3>
+            </div>
+            @endrole
 
             <ul class="list-unstyled components">
                 <li>
@@ -159,19 +171,25 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.index') ? 'active' : '' }}">
+                    @can(abilities: 'create-users')
+                    <a href="{{ route('users.index') }}" class="nav-link">
                         <i class="fas fa-users"></i> Manage Users
                     </a>
+                    @endcan
                 </li>
                 <li>
-                    <a href="{{ route('customers.index') }}" class="{{ request()->routeIs('customers.index') ? 'active' : '' }}">
+                    @can(abilities: 'create-customers')
+                    <a href="{{ route('customers.index') }}" class="nav-link">
                         <i class="fas fa-user-tie"></i> Manage Customers
                     </a>
+                    @endcan
                 </li>
                 <li>
-                    <a href="{{ route('suppliers.index') }}" class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
+                    @can(abilities: 'create-suppliers')
+                    <a href="{{ route('suppliers.index') }}" class="nav-link">
                         <i class="fas fa-truck"></i> Manage Suppliers
                     </a>
+                    @endcan
                     
                     <ul class="collapse list-unstyled ps-4" id="supplierSubmenu">
                         <li>
@@ -187,12 +205,12 @@
                 </li>
                 <li>
                     <a href="{{ url('/user-roles') }}" class="{{ request()->is('user-roles') ? 'active' : '' }}">
-                        <i class="fas fa-user-shield"></i> Manage User Roles
+                        <i class="fas fa-user-shield"></i> Access Control Panel
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.index') ? 'active' : '' }}">
-                        <i class="fas fa-users-cog"></i> Define Roles
+                        <i class="fas fa-users-cog"></i> Define User Roles
                     </a>
                 </li>
                 <li>
@@ -206,9 +224,11 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/charts" class="{{ request()->is('charts') ? 'active' : '' }}">
+                    @can('watch-analytics')
+                    <a href="/charts">
                         <i class="fas fa-chart-bar"></i> Analytics
                     </a>
+                    @endcan
                 </li>
                 <li>
                     <a href="#" class="{{ request()->is('settings*') ? 'active' : '' }}">
