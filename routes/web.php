@@ -13,6 +13,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\CustomerDashboardController;
+use App\Http\Controllers\SupplierDashboardController;
 
 // Public routes
 Route::get('/', function () {
@@ -44,6 +45,7 @@ Route::middleware('allow.registration')->group(function () {
         Route::get('/users/list', [UserController::class, 'listUsers'])->name('users.list');
         // Route::get('/dashboard', [SupplierController::class, 'fetchSupplier'])->name('dashboard');
         Route::get('/customer-dashboard', [CustomerDashboardController::class, 'dashboard'])->name('customer_dashboard');        
+        Route::get('/supplier-dashboard', [SupplierDashboardController::class, 'index'])->name('supplier_dashboard');        
         
         
         

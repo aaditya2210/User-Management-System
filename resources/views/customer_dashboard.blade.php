@@ -314,7 +314,7 @@
                                                 <th>Name</th>
                                                 <th>Email</th>
                                                 <th>Contact Number</th>
-                                                <th>Location</th>
+                                                <th>Nationality</th>
                                                 <th>Status</th>
                                                 <th>Registration Date</th>
                                             </tr>
@@ -326,7 +326,7 @@
                                                     <td>{{ $customer->name }}</td>
                                                     <td>{{ $customer->email }}</td>
                                                     <td>{{ $customer->contact_number }}</td>
-                                                    <td>{{ $customer->state }}, {{ $customer->city }}</td>
+                                                    <td>{{ $customer->nationality }}</td>
                                                     <td>
                                                         <span class="badge status-badge {{ $customer->status == 'active' ? 'bg-success' : 'bg-warning' }}">
                                                             {{ ucfirst($customer->status) }}
