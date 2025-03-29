@@ -19,10 +19,20 @@ use App\Http\Controllers\SupplierDashboardController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
 
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+
+Route::get('/verify-otp', function () {
+    return view('auth.verify-otp');
+})->name('otp.page');
+
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify');
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+// Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
