@@ -96,7 +96,7 @@ class AuthController extends Controller
                 event(new UserRegistered($user));
                 // return redirect()->to('http://127.0.0.1:8000/users')->with('success', 'Registration successful!');
                 Auth::login($user);
-                return redirect()->to('http://127.0.0.1:8000/dashboard')->with('success', 'Registration successful!');
+                return redirect()->to('http://127.0.0.1:8000/login')->with('success', 'Registration successful!');
                 
             
             }
