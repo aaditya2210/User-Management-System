@@ -192,52 +192,101 @@ class AuthController extends Controller
 
 
 
+    // public function verifyOtp(Request $request)
+    // {
+    //     try {
+    //         Log::info('Starting OTP verification', ['request' => $request->all()]);
+    
+    //         $request->validate([
+    //             'user_id' => 'required|exists:users,id',
+    //             'otp' => 'required|numeric',
+    //         ]);
+    
+    //         $user = User::find($request->user_id);
+    //         Log::info('User found', ['user' => $user]);
+    
+    //         $cachedOtp = Cache::get('otp_' . $user->id);
+    //         Log::info('Cached OTP Retrieved', ['cachedOtp' => $cachedOtp]);
+    
+    //         if (!$cachedOtp || $cachedOtp != $request->otp) {
+    //             Log::warning('Invalid OTP', ['provided_otp' => $request->otp, 'cached_otp' => $cachedOtp]);
+    //             return redirect()->back()->withErrors(['error' => 'Invalid or expired OTP']);
+    //         }
+    
+    //         // OTP is valid, clear cache
+    //         Cache::forget('otp_' . $user->id);
+    //         Log::info('OTP cache cleared');
+    
+    //         // Manually authenticate the user
+    //         Auth::login($user);
+    //         Log::info('User logged in', ['user_id' => $user->id]);
+    
+    //         // Generate a Personal Access Token
+    //         $tokenResult = $user->createToken('User Personal Token');
+    //         $token = $tokenResult->accessToken;
+    //         Log::info('Access token generated', ['token' => $token]);
+    
+    //         // Store token in session (optional if using session-based authentication)
+    //         session(['access_token' => $token]);
+    
+    //         // Redirect to the dashboard
+    //         return redirect('/dashboard')->with('success', 'OTP Verified Successfully!');
+    
+    //     } catch (\Exception $e) {
+    //         Log::error('Error in verifyOtp method:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+    //         return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.']);
+    //     }
+    // }
     public function verifyOtp(Request $request)
     {
         try {
             Log::info('Starting OTP verification', ['request' => $request->all()]);
-    
+
+            // Validate the OTP request
             $request->validate([
                 'user_id' => 'required|exists:users,id',
                 'otp' => 'required|numeric',
             ]);
-    
+
+            // Find user
             $user = User::find($request->user_id);
             Log::info('User found', ['user' => $user]);
-    
+
+            // Retrieve OTP from cache
             $cachedOtp = Cache::get('otp_' . $user->id);
             Log::info('Cached OTP Retrieved', ['cachedOtp' => $cachedOtp]);
-    
+
+            // Validate OTP
             if (!$cachedOtp || $cachedOtp != $request->otp) {
                 Log::warning('Invalid OTP', ['provided_otp' => $request->otp, 'cached_otp' => $cachedOtp]);
-                return redirect()->back()->withErrors(['error' => 'Invalid or expired OTP']);
+                return response()->json(['error' => 'Invalid or expired OTP'], 401);
             }
-    
+
             // OTP is valid, clear cache
             Cache::forget('otp_' . $user->id);
             Log::info('OTP cache cleared');
-    
-            // Manually authenticate the user
+
+            // Authenticate the user
             Auth::login($user);
             Log::info('User logged in', ['user_id' => $user->id]);
-    
+
             // Generate a Personal Access Token
             $tokenResult = $user->createToken('User Personal Token');
             $token = $tokenResult->accessToken;
             Log::info('Access token generated', ['token' => $token]);
-    
-            // Store token in session (optional if using session-based authentication)
-            session(['access_token' => $token]);
-    
-            // Redirect to the dashboard
-            return redirect('/dashboard')->with('success', 'OTP Verified Successfully!');
-    
+
+            // Return JSON response with token (to store in localStorage)
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP Verified Successfully!',
+                'token' => $token
+            ]);
+
         } catch (\Exception $e) {
             Log::error('Error in verifyOtp method:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.']);
+            return response()->json(['error' => 'Something went wrong. Please try again.'], 500);
         }
     }
-    
     // ------------------------------------------------------------------------------------------------------
 
     /**

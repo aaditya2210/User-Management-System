@@ -168,9 +168,9 @@
                         <i class="fas fa-users-cog"></i> Define User Roles
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#">
-                        {{-- <i class="fas fa-box"></i> Supplier Hub --}}
+                        
                         <i class="fas fa-boxes"></i> Supplier Hub
                     </a>
                 </li>
@@ -178,7 +178,7 @@
                     <a href="/products">
                         <i class="fas fa-box-open"></i> Product Explorer
                     </a>
-                </li>
+                </li> --}}
                 <li>
                     @can('watch-analytics')
                     <a href="/charts">
@@ -186,11 +186,11 @@
                     </a>
                     @endcan
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#">
                         <i class="fas fa-cog"></i> Settings
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </nav>
 

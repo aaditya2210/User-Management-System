@@ -253,27 +253,73 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+<!-- jQuery (if not already included) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        $(document).ready(function() {
-            // Handle form submission for validation feedback
-            $('#otpForm').on('submit', function(e) {
-                // This is just for demo purposes - in production this validation
-                // would happen server-side after the form submits
-                
-                // Simulating a successful verification
-                // Uncomment the next line and comment the line after to show success message
-                // $('#successNotification').fadeIn();
-                // $('#errorNotification').fadeIn();
-                
-                // Note: In a real implementation, you would remove this setTimeout
-                // setTimeout(function() {
-                //     $('#successNotification, #errorNotification').fadeOut();
-                // }, 3000);
-                
-                // Comment out this line in production as it prevents the form from submitting
-                // e.preventDefault();
-            });
-            
+//       $("#otpForm").on("submit", function (e) {
+//     e.preventDefault();
+
+//     $.ajax({
+//         url: "/verify-otp",
+//         method: "POST",
+//         data: $(this).serialize(),
+//         success: function (response) {
+//             if (response.success) {
+//                 localStorage.setItem("access_token", response.token);
+//                 alert("OTP Verified Successfully!");
+//                 window.location.href = "/dashboard"; // Redirect to dashboard
+//             }
+//         },
+//         error: function (xhr) {
+//             alert(xhr.responseJSON.error || "Invalid OTP");
+//         }
+//     });
+// });
+
+$(document).ready(function () {
+    $("#otpForm").on("submit", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "/verify-otp",
+            method: "POST",
+            data: $(this).serialize(),
+            success: function (response) {
+                if (response.success) {
+                    localStorage.setItem("access_token", response.token);
+                    
+                    // Toastr Success Message
+                    toastr.success("OTP Verified Successfully!", "Success", {
+                        timeOut: 3000, // Auto close after 3 seconds
+                        closeButton: true,
+                        progressBar: true
+                    });
+
+                    // Redirect after a slight delay
+                    setTimeout(() => {
+                        window.location.href = "/dashboard";
+                    }, 1500);
+                }
+            },
+            error: function (xhr) {
+                // Toastr Error Message
+                toastr.error(xhr.responseJSON?.error || "Invalid OTP", "Error", {
+                    timeOut: 3000,
+                    closeButton: true,
+                    progressBar: true
+                });
+            }
+        });
+    });
+});
+
             // 5-minute countdown timer
             let totalSeconds = 5 * 60; // 5 minutes in seconds
             
@@ -321,7 +367,7 @@
                     });
                 }, 3000);
             });
-        });
+     
     </script>
 </body>
 </html>
