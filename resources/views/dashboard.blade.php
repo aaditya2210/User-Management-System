@@ -168,17 +168,18 @@
                         <i class="fas fa-users-cog"></i> Define User Roles
                     </a>
                 </li>
-                {{-- <li>
-                    <a href="#">
-                        
-                        <i class="fas fa-boxes"></i> Supplier Hub
+                @role('admin')
+                <li>
+                    <a href="/telescope" class="{{ request()->is('supplier-hub*') ? 'active' : '' }}">
+                        <i class="fas fa-user-secret"></i> AdminX Debug
                     </a>
                 </li>
-                <li>
+                @endrole
+                {{-- <li>
                     <a href="/products">
                         <i class="fas fa-box-open"></i> Product Explorer
                     </a>
-                </li> --}}
+                </li> --}} 
                 <li>
                     @can('watch-analytics')
                     <a href="/charts">
@@ -555,7 +556,7 @@
                             @foreach($activities as $activity)
                                 <tr>
                                     {{-- <td>{{ $activity->user->first_name }} {{ $activity->user->last_name }}</td> --}}
-                                    <td>{{ $activity->user->first_name ?? 'Unknown' }} {{ $activity->user->last_name ?? 'User' }}</td>
+                                    <td>{{ $activity->user->first_name ?? 'Admin' }} {{ $activity->user->last_name ?? 'User' }}</td>
                                     <td>{{ $activity->activity }}</td>
                                     <td><span class="badge bg-{{ $activity->status == 'Completed' ? 'success' : ($activity->status == 'Pending' ? 'warning' : 'danger') }}">{{ $activity->status }}</span></td>
                                     <td>{{ $activity->created_at->diffForHumans() }}</td>

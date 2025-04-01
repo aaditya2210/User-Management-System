@@ -391,11 +391,11 @@
                                 <input type="checkbox" class="form-check-input" id="remember">
                                 <label class="form-check-label" for="remember">Remember me</label>
                             </div>
-                            <a href="#" class="forgot-link text-decoration-none">Forgot password?</a>
+                            {{-- <a href="#" class="forgot-link text-decoration-none">Forgot password?</a> --}}
                         </div>
                         <button type="submit" class="btn btn-primary w-100 mb-4">Sign In</button>
                         <p class="create-account">
-                            Don't have an account? <a href="#" class="create-link text-decoration-none">Request Access</a>
+                            Don't have an account? <a href="/register" class="create-link text-decoration-none">Create Account</a>
                         </p>
                     </form>
                 </div>

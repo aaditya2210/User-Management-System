@@ -213,16 +213,18 @@
                         <i class="fas fa-users-cog"></i> Define User Roles
                     </a>
                 </li>
+                @role('admin')
                 <li>
-                    <a href="#" class="{{ request()->is('supplier-hub*') ? 'active' : '' }}">
-                        <i class="fas fa-boxes"></i> Supplier Hub
+                    <a href="/telescope" class="{{ request()->is('supplier-hub*') ? 'active' : '' }}">
+                        <i class="fas fa-user-secret"></i> AdminX Debug
                     </a>
                 </li>
-                <li>
+                @endrole
+                {{-- <li>
                     <a href="/products" class="{{ request()->is('products*') ? 'active' : '' }}">
                         <i class="fas fa-box-open"></i> Product Explorer
                     </a>
-                </li>
+                </li> --}}
                 <li>
                     @can('watch-analytics')
                     <a href="/charts">
@@ -230,11 +232,11 @@
                     </a>
                     @endcan
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#" class="{{ request()->is('settings*') ? 'active' : '' }}">
                         <i class="fas fa-cog"></i> Settings
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </nav>
 

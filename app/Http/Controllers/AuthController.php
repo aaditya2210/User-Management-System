@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Cache;
 // use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 // use Laravel\Passpor;
-use App\Mail\OtpMail;
+use App\Mail\OTPMail;
 
 
 class AuthController extends Controller
@@ -179,9 +179,9 @@ class AuthController extends Controller
         Cache::put('otp_' . $user->id, $otp, now()->addMinutes(5));
 
         // Send OTP via email (Modify as per your mail configuration)
-        Mail::raw("Your OTP is: $otp", function ($message) use ($user) {
+        Mail::send('emails.otp', ['otp' => $otp], function ($message) use ($user) {
             $message->to($user->email)
-                    ->subject('Your OTP Code');
+                    ->subject('Your Security Verification Code');
         });
 
         // Store user ID in session for verification
@@ -191,52 +191,6 @@ class AuthController extends Controller
     }
 
 
-
-    // public function verifyOtp(Request $request)
-    // {
-    //     try {
-    //         Log::info('Starting OTP verification', ['request' => $request->all()]);
-    
-    //         $request->validate([
-    //             'user_id' => 'required|exists:users,id',
-    //             'otp' => 'required|numeric',
-    //         ]);
-    
-    //         $user = User::find($request->user_id);
-    //         Log::info('User found', ['user' => $user]);
-    
-    //         $cachedOtp = Cache::get('otp_' . $user->id);
-    //         Log::info('Cached OTP Retrieved', ['cachedOtp' => $cachedOtp]);
-    
-    //         if (!$cachedOtp || $cachedOtp != $request->otp) {
-    //             Log::warning('Invalid OTP', ['provided_otp' => $request->otp, 'cached_otp' => $cachedOtp]);
-    //             return redirect()->back()->withErrors(['error' => 'Invalid or expired OTP']);
-    //         }
-    
-    //         // OTP is valid, clear cache
-    //         Cache::forget('otp_' . $user->id);
-    //         Log::info('OTP cache cleared');
-    
-    //         // Manually authenticate the user
-    //         Auth::login($user);
-    //         Log::info('User logged in', ['user_id' => $user->id]);
-    
-    //         // Generate a Personal Access Token
-    //         $tokenResult = $user->createToken('User Personal Token');
-    //         $token = $tokenResult->accessToken;
-    //         Log::info('Access token generated', ['token' => $token]);
-    
-    //         // Store token in session (optional if using session-based authentication)
-    //         session(['access_token' => $token]);
-    
-    //         // Redirect to the dashboard
-    //         return redirect('/dashboard')->with('success', 'OTP Verified Successfully!');
-    
-    //     } catch (\Exception $e) {
-    //         Log::error('Error in verifyOtp method:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-    //         return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.']);
-    //     }
-    // }
     public function verifyOtp(Request $request)
     {
         try {
