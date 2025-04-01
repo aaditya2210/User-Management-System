@@ -99,7 +99,10 @@
 @section('content')
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">Manage User Roles & Permissions</h2>
+        {{-- <h2 class="fw-bold text-primary">Manage User Roles & Permissions</h2> --}}
+        <h2 class="fw-bold text-primary fs-1 mb-3">Access Control Panel</h2>
+        {{-- <h2 class="fw-bold text-primary" style="font-size: 1.5rem;">Manage User Roles & Permissions</h2> --}}
+
     </div>
 
     @if(session('success'))

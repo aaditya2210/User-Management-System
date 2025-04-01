@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h2>Add Supplier</h2>
+<h2 class="fw-bold text-primary fs-1 mb-3">Add Supplier</h2>
 
     <form id="supplierForm">
         @csrf

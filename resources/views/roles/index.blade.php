@@ -2,7 +2,8 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">Roles Management</h2>
+    <h2 class="fw-bold text-primary fs-1 mb-3">Define User Roles</h2>
+
 
     <!-- Add Role Button -->
     <button class="btn btn-success mb-3" onclick="openCreateModal()">Add Role</button>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h2>Edit Supplier</h2>
+<h2 class="fw-bold text-primary fs-1 mb-3">Edit Supplier</h2>
 
     <form id="editSupplierForm" action="{{ route('suppliers.update', $supplier->id) }}" method="POST">
         @csrf

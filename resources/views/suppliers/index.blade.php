@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary" style="font-size: 1.5rem;">Supplier Management</h2>
+        <h2 class="fw-bold text-primary" style="font-size: 1.8rem;">Supplier Management</h2>
         {{-- <h2 class="fw-bold text-primary">Supplier Management</h2> --}}
 
         {{-- @can('manage-suppliers') --}}
