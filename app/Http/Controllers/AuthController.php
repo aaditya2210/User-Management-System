@@ -167,29 +167,30 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
+    
         if (!Auth::attempt($credentials)) {
-            return back()->withErrors(['error' => 'Invalid Credentials']);
+            return back()->with('error', 'Invalid credentials. Please try again.');
         }
-
+    
+        // session()->flash('success', 'Login successful! A security verification code has been sent to your email.');
         $user = Auth::user();
-
+    
         // Generate OTP
         $otp = rand(100000, 999999);
         Cache::put('otp_' . $user->id, $otp, now()->addMinutes(5));
-
+    
         // Send OTP via email (Modify as per your mail configuration)
         Mail::send('emails.otp', ['otp' => $otp], function ($message) use ($user) {
             $message->to($user->email)
                     ->subject('Your Security Verification Code');
         });
-
+    
         // Store user ID in session for verification
         session(['user_id' => $user->id]);
-
-        return redirect()->route('otp.page')->with('message', 'OTP sent to your email.');
+    
+        return redirect()->route('otp.page')->with('success', 'OTP sent to your email.');
     }
-
+    
 
     public function verifyOtp(Request $request)
     {

@@ -149,6 +149,9 @@ public function index()
     $totalCustomers = Customer::count();
     $totalSuppliers = Supplier::count();
 
+    $recentUsersCount = Activity::where('created_at', '>=', Carbon::now()->subMinutes(30))->count();
+
+
     // Fetch Customer Dashboard Metrics
     $newCustomersThisMonth = Customer::where('created_at', '>=', Carbon::now()->startOfMonth())->count();
     $atRiskCustomers = $this->calculateAtRiskCustomers();
@@ -207,7 +210,9 @@ public function index()
         'recentActivities',
         'activities',
         'users',
-        'suppliers'
+        'suppliers',
+        'recentUsersCount',
+        
     ));
 }
 

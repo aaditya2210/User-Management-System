@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Management System</title>
+    <title>User Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -282,7 +282,7 @@
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <div class="brand-text">
-                        <h1>Enterprise Manager</h1>
+                        <h1>User Management System</h1>
                         <p>Streamline operations, enhance productivity, and drive business growth with our comprehensive management solution.</p>
                     </div>
                     <div class="brand-illustration">
@@ -404,21 +404,54 @@
         </div>
     </div>
 
-    <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.getElementById('toggleIcon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+<!-- jQuery (if not already included) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "5000",
+    };
+
+    @if (session()->has('success'))
+        toastr.success(@json(session('success')));
+    @endif
+
+    @if (session()->has('error'))
+        toastr.error(@json(session('error')));
+    @endif
+
+    @if (session()->has('message'))
+        toastr.info(@json(session('message')));
+    @endif
+
+
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>

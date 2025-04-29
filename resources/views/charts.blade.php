@@ -57,6 +57,7 @@
         </div>
 
         <!-- Pie Chart - User Distribution -->
+        @role('admin')
         <div class="col-lg-6 mb-4">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-0">
@@ -67,7 +68,10 @@
                 </div>
             </div>
         </div>
+@endrole
 
+
+        @role(['admin', 'supplier_manager'])
         <!-- Bar Chart: Supplier Status -->
         <div class="col-lg-6 mb-4">
             <div class="card shadow-sm border-0 h-100">
@@ -106,11 +110,15 @@
             </div>
         </div>
     </div>
+@endrole
+
+
 
     <!-- CUSTOMER DATA SECTION -->
+    @role(['admin', 'customer_manager'])
     <div class="row mb-4 mt-4">
         <div class="col-12">
-            <h3 class="fw-bold text-info border-bottom pb-3">Customer Analytics</h3>
+            <h3 class="fw-bold text-info border-bottom pb-5 display-6">Customer Analytics</h3>
         </div>
     </div>
 
@@ -179,6 +187,7 @@
             </div>
         </div>
     </div>
+    @endrole
 
     {{-- <div class="container">
         <h2>User Distribution Map (India)</h2>
@@ -200,7 +209,7 @@
         </div>
     </div> --}}
 
-
+@role('admin')
     <div class="container">
         <h2>Distribution Map (Users, Suppliers & Customers)</h2>
         
@@ -209,19 +218,27 @@
                 <h4>Users Location (India Map)</h4>
                 <div id="users_map_div" style="width: 100%; height: 400px;"></div>
             </div>
+            @endrole
+
+            @role(['supplier_manager','admin'])
             <div class="col-md-6">
                 <h4>Suppliers Location (India Map)</h4>
                 <div id="suppliers_map_div" style="width: 100%; height: 400px;"></div>
             </div>
+            @endrole
         </div>
     
+
+        @role(['customer_manager','admin'])
         <div class="row mt-4">
             <div class="col-md-12">
                 <h4>Customers Location (World Map)</h4>
                 <div id="customers_map_div" style="width: 100%; height: 500px;"></div>
             </div>
         </div>
+        @endrole
     </div>
+    
 
     <!-- Last Updated Section -->
     <div class="row mt-2">
@@ -231,7 +248,7 @@
                 <small class="text-muted" id="lastUpdated">--</small>
                 <div class="spinner-border spinner-border-sm text-primary ms-2 d-none" id="refreshSpinner" role="status">
                     <span class="visually-hidden">Loading...</span>
-                </div>
+               </div>
             </div>
         </div>
     </div>

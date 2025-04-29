@@ -386,11 +386,11 @@
                         <div class="card dashboard-card bg-info text-white h-100">
                             <div class="card-body text-center">
                                 <div class="card-icon">
-                                    <i class="fas fa-shopping-cart"></i>
+                                    <i class="fas fa-bolt"></i>
                                 </div>
-                                <h5 class="card-title">New Orders</h5>
-                                <h3>129</h3>
-                                <p class="card-text"><small>+18% from last week</small></p>
+                                <h5 class="card-title">Recent Activities</h5>
+                                <h3>{{ $recentUsersCount }}</h3>
+                                <p class="card-text"><small>(Last 30 min)</small></p>
                             </div>
                         </div>
                     </div>
@@ -825,6 +825,60 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <div class="card dashboard-card h-100">
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Recent Customers</h5>
+                                    <a href="{{ route('customers.index') }}" class="btn btn-sm btn-primary">View All</a>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Contact Number</th>
+                                                    <th>Nationality</th>
+                                                    <th>Customer Type</th>
+                                                    <th>Subscription</th>
+                                                    {{-- <th>Status</th> --}}
+                                                    <th>Registration Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($recentCustomers as $customer)
+                                                    <tr>
+                                                        {{-- <td>{{ $customer->first_name }} {{ $customer->last_name }}</td> --}}
+                                                        <td>{{ $customer->name }}</td>
+                                                        <td>{{ $customer->email }}</td>
+                                                        <td>{{ $customer->contact_number }}</td>
+                                                        <td>{{ $customer->nationality }}</td>
+                                                        <td>{{ $customer->customer_type }}</td>
+                                                        {{-- <td>{{ $customer->newsletter_subscription }}</td> --}}
+                                                        <td>
+                                                            {{-- <span class="badge status-badge {{ $customer->newsletter_subscription == 'active' ? 'bg-success' : 'bg-warning' }}">
+                                                                {{ ucfirst($customer->newsletter_subscription) }}
+                                                            </span> --}}
+                                                            <span class="badge status-badge {{ $customer->newsletter_subscription == 1 ? 'bg-success' : 'bg-warning' }}">
+                                                                {{ $customer->newsletter_subscription == 1 ? 'Yes' : 'No' }}
+                                                            </span>
+                                                            
+                                                        </td>
+                                                        <td>{{ $customer->created_at->format('d M Y') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     @endrole
 
 

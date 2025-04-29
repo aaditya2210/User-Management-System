@@ -281,7 +281,7 @@
         color: #2563eb !important;
     }
     .form-control {
-        padding: .6rem .75rem;
+        padding: 0rem .75rem;
     }
     .form-control:focus {
         box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);

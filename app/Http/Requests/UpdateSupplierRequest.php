@@ -28,7 +28,13 @@ class UpdateSupplierRequest extends FormRequest
             'contact_person' => 'nullable|string|max:50',
             'status' => 'required|in:active,inactive',
             'contract_start_date' => 'nullable|date',
-            'contract_end_date' => 'nullable|date|after_or_equal:contract_start_date',
-        ];
+            'contract_end_date' => [
+                'nullable', 'date',
+                function ($attribute, $value, $fail) {
+                    if (request()->contract_start_date && $value < request()->contract_start_date) {
+                        $fail('The contract end date must be after or equal to the start date.');
+                    }
+                }
+            ],        ];
     }
 }
