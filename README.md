@@ -16,10 +16,10 @@
 
 🔐 A Laravel-based User Management System with role-based access control, supplier and customer management, and data visualization. 📊
 
-<div align="center">
-    <p>📸 Add your application screenshots here</p>
-    <img src="screenshots/dashboard-placeholder.png" alt="Dashboard Screenshot Placeholder" width="80%">
-</div>
+
+![Screenshot](public/images/landing.png)
+
+
 
 
 
@@ -89,14 +89,24 @@ Traditional user management systems often lack flexibility, comprehensive report
 
 ## 📸 Screenshots
 
-<div align="center">
-  <p><strong>👑 Admin Dashboard</strong></p>
-  <p><em>Add screenshot here</em></p>
-  <br><br>
+
+### 📌 Admin Dashboard
+![Screenshot](public/images/admin-dashboard.png)
   
-  <p><strong>👤 User Management</strong></p>
-  <p><em>Add screenshot here</em></p>
-  <br><br>
+### 📌  User Management
+![Screenshot](public/images/user-crud.png)
+
+### 📌  Supplier Dashboard
+![Screenshot](public/images/supplier-dashboard.png)
+
+### 📌  Supplier Management
+![Screenshot](public/images/supplier-crud.png)
+
+### 📌  Customer Dashboard
+![Screenshot](public/images/customer-dashboard.png)
+
+### 📌  Customer Management
+![Screenshot](public/images/customer-crud.png)
   
   <p><strong>🏭 Supplier Dashboard</strong></p>
   <p><em>Add screenshot here</em></p>
