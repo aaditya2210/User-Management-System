@@ -129,7 +129,10 @@ Traditional user management systems often lack flexibility, comprehensive report
 ![Screenshot](public/images/telescope.png)
 
 ### 📌  Access Control Panel
-![Screenshot](public/images/access-control.png)
+![Screenshot](public/images/access-control2.png)
+
+### 📌  Profile
+![Screenshot](public/images/profile.png)
 
 ### 🧭 Basic Navigation
 
