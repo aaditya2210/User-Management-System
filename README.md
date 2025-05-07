@@ -131,6 +131,9 @@ Traditional user management systems often lack flexibility, comprehensive report
 ### 📌  Access Control Panel
 ![Screenshot](public/images/access-control2.png)
 
+### 📌  Define New Roles
+![Screenshot](public/images/define-roles.png)
+
 ### 📌  Profile
 ![Screenshot](public/images/profile.png)
 
