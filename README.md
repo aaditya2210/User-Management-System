@@ -1,6 +1,6 @@
 <div align="center">
     
-# 🧠🔐 Smart and Secure User Management System 🛡️🚀
+# 🧠🔐 Smart and Secure User Management System 🛡️🚀 ![Screenshot](https://user-images.githubusercontent.com/74038190/216122041-518ac897-8d92-4c6b-9b3f-ca01dcaf38ee.png ) 
 </div>
 <div align="center">
 
@@ -14,18 +14,25 @@
 </div>
 
 
-🔐 A Laravel-based User Management System with role-based access control, supplier and customer management, and data visualization. 📊
 
 
+
+### 📌  Landing page
 ![Screenshot](public/images/landing.png)
 
-
+```
 
 
 
 ## 📝 Description
 
-The User Management System (UMS) is a web application built with Laravel that provides user, supplier, and customer management with role-based access control. The system includes dashboards with analytics, data visualization, and basic reporting capabilities.
+🔐 A powerful and secure User Management System built with Laravel, designed to streamline the management of users, suppliers, and customers. It features robust role-based access control (RBAC), allowing administrators to assign and manage permissions with precision. 📋
+
+📦 The system supports supplier and customer modules with full CRUD functionality, enabling seamless data management and real-time collaboration. 
+
+📊 Comprehensive dashboards and interactive data visualizations provide valuable insights into user activity, system usage, and business performance, helping administrators make data-driven decisions efficiently.
+
+✨ With built-in support for authentication, authorization, reporting, and modular architecture, this application is ideal for enterprise-grade solutions where security, scalability, and usability are top priorities.
 
 🎓 This system was developed as part of a university /Internship project to demonstrate a complete Laravel application with role-based permissions, database relationships, and interactive dashboards.
 
@@ -428,8 +435,9 @@ php artisan serve
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
+![Alt Text](https://user-images.githubusercontent.com/74038190/214644145-264f4759-7633-441e-9d67-d8dda9d50d26.gif)
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+- Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. 🍴 **Fork** the repository  
 2. 🌿 **Create** your feature branch (`git checkout -b feature/AmazingFeature`)  
@@ -457,8 +465,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🙏 Acknowledgments
 
+
 - 🧱 [Laravel Team](https://laravel.com/) for the amazing framework  
 - 🧩 [Spatie](https://spatie.be/) for the Laravel Permission package  
 - 🎨 [TailwindCSS](https://tailwindcss.com/) for the utility-first CSS framework  
 - 📊 [Chart.js](https://www.chartjs.org/) for beautiful chart components  
-- 🌍 All open-source contributors whose packages made this project possible  
+- 🌍 All open-source contributors whose packages made this project possible
+  
+![Alt Text](https://user-images.githubusercontent.com/74038190/212749447-bfb7e725-6987-49d9-ae85-2015e3e7cc41.gif)
+
+
