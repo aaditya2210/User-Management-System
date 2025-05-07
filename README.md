@@ -16,10 +16,10 @@
 
 🔐 A Laravel-based User Management System with role-based access control, supplier and customer management, and data visualization. 📊
 
-<div align="center">
-    <p>📸 Add your application screenshots here</p>
-    <img src="screenshots/dashboard-placeholder.png" alt="Dashboard Screenshot Placeholder" width="80%">
-</div>
+
+![Screenshot](public/images/landing.png)
+
+
 
 
 
@@ -89,23 +89,47 @@ Traditional user management systems often lack flexibility, comprehensive report
 
 ## 📸 Screenshots
 
-<div align="center">
-  <p><strong>👑 Admin Dashboard</strong></p>
-  <p><em>Add screenshot here</em></p>
-  <br><br>
-  
-  <p><strong>👤 User Management</strong></p>
-  <p><em>Add screenshot here</em></p>
-  <br><br>
-  
-  <p><strong>🏭 Supplier Dashboard</strong></p>
-  <p><em>Add screenshot here</em></p>
-  <br><br>
-  
-  <p><strong>🧑‍🤝‍🧑 Customer Analytics</strong></p>
-  <p><em>Add screenshot here</em></p>
-</div>
+### 📌  Login
+![Screenshot](public/images/login.png)
 
+### 📌  Register
+![Screenshot](public/images/register.png)
+
+### 📌  2FA (OTP Verification)
+![Screenshot](public/images/otp.png)
+
+### 📌  2FA (OTP Verification Mail)
+![Screenshot](public/images/email.png)
+
+### 📌 Admin Dashboard
+![Screenshot](public/images/admin-dashboard.png)
+  
+### 📌  User Management
+![Screenshot](public/images/user-crud.png)
+
+### 📌  Analytics
+![Screenshot](public/images/analytics.png)
+
+### 📌  Supplier Dashboard
+![Screenshot](public/images/supplier-dashboard.png)
+
+### 📌  Supplier Management
+![Screenshot](public/images/supplier-crud.png)
+
+### 📌  Customer Dashboard
+![Screenshot](public/images/customer-dashboard.png)
+
+### 📌  Customer Management
+![Screenshot](public/images/customer-crud.png)
+
+### 📌  Analytics
+![Screenshot](public/images/analytics2.png)
+
+### 📌  Laravel Telescope
+![Screenshot](public/images/telescope.png)
+
+### 📌  Access Control Panel
+![Screenshot](public/images/access-control.png)
 
 ### 🧭 Basic Navigation
 
