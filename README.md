@@ -365,7 +365,7 @@ The system includes Laravel Passport for API authentication, enabling:
 1. **📥 Clone the repository**
 
 ```bash
-git clone https://github.com/yourusername/user-management-system.git
+git clone https://github.com/aaditya2210/user-management-system.git
 cd user-management-system
 ```
 
@@ -431,31 +431,34 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. 🍴 **Fork** the repository  
+2. 🌿 **Create** your feature branch (`git checkout -b feature/AmazingFeature`)  
+3. 💾 **Commit** your changes (`git commit -m 'Add some AmazingFeature'`)  
+4. 🚀 **Push** to the branch (`git push origin feature/AmazingFeature`)  
+5. 📬 **Open** a Pull Request  
 
-### Development Workflow
+### 🔄 Development Workflow
 
-1. Check the [Issues](https://github.com/yourusername/user-management-system/issues) page for open tasks
-2. Comment on an issue you'd like to work on
-3. Follow coding standards and write tests
-4. Submit a PR with a detailed description of changes
+1. 📋 Check the [Issues](https://github.com/aaditya2210/User-Management-System-Final-Sem-Project/issues) page for open tasks  
+2. 💬 Comment on an issue you'd like to work on  
+3. 🧪 Follow coding standards and write tests  
+4. ✅ Submit a PR with a detailed description of changes  
+
+---
 
 ## 👨‍💻 Author
 
-**Your Name**  
-- Email: your.email@example.com
-- GitHub: [YourGitHubUsername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourusername)
+**Aaditya Gandhi**  
+- 📧 Email: aadityagandhi2210@gmail.com  
+- 🐙 GitHub: [aaditya2210](https://github.com/aaditya2210)  
+- 💼 LinkedIn: [Aaditya Gandhi](https://www.linkedin.com/in/aaditya-gandhi)
 
+---
 
 ## 🙏 Acknowledgments
 
-- [Laravel Team](https://laravel.com/) for the amazing framework
-- [Spatie](https://spatie.be/) for the Laravel Permission package
-- [TailwindCSS](https://tailwindcss.com/) for the utility-first CSS framework
-- [Chart.js](https://www.chartjs.org/) for beautiful chart components
-- All open-source contributors whose packages made this project possible
+- 🧱 [Laravel Team](https://laravel.com/) for the amazing framework  
+- 🧩 [Spatie](https://spatie.be/) for the Laravel Permission package  
+- 🎨 [TailwindCSS](https://tailwindcss.com/) for the utility-first CSS framework  
+- 📊 [Chart.js](https://www.chartjs.org/) for beautiful chart components  
+- 🌍 All open-source contributors whose packages made this project possible  
