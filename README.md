@@ -20,7 +20,7 @@
 ### 📌  Landing page
 ![Screenshot](public/images/landing.png)
 
-```
+
 
 
 
